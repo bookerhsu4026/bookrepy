@@ -216,7 +216,7 @@ def handle_message(event):
             )
         )
     else:
-        message = TextSendMessage(text=''+event.message.text)
+        message = TextSendMessage(text='肥肥:'+event.message.text)
     line_bot_api.reply_message(event.reply_token,message)
 
 
