@@ -90,7 +90,7 @@ def get_push_msg(img_data):
                         )
                     )
                 )
-        #end for    
+        #end for
 
         return _msg_columns;
     #end if
@@ -304,10 +304,18 @@ def handle_message(event):
 #            message = TextSendMessage(text='買沒:{}'.format(event.message.text))       
     elif is_buy:
         print('keyword={}'.format(event.message.text))
-        _cols = getmomo(event.message.text)
-        message = get_push_msg(_cols)
-        if (message is None):
+        _data = getmomo(event.message.text)
+        _message_columns = get_push_msg(_data)
+        message = None
+        if (len(_message_columns) == 0):
             message = TextSendMessage(text='買沒:{}'.format(event.message.text))
+        else:
+            message = TemplateSendMessage(
+                alt_text=event.message.text,
+                template=ImageCarouselTemplate(
+                    columns=_message_columns
+                )
+            )           
     else:
         message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
         
