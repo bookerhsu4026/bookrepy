@@ -311,6 +311,7 @@ def handle_message(event):
     else:
         message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
         
+    print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
 
 
