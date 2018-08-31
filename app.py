@@ -127,7 +127,7 @@ def handle_message(event):
     print('uid: '+uid)
     print('name:'+nameid)
     print('is_buy:'+str(is_buy))
-    print(type(event.message.text))
+    print(event.message.text)
 
     # 傳送圖片
     if event.message.text == '買東西':
