@@ -121,13 +121,15 @@ def handle_message(event):
 #        )
     # 傳送影片
     elif event.message.text == '試試看影片':
+        is_buy = False
         message = VideoSendMessage(
             original_content_url='https://i.imgur.com/hOKAE06.mp4',
             preview_image_url='https://i.imgur.com/hOKAE06.mp4'
         )
     # 傳送位置
     elif event.message.text == '我要看發生地點':
-message = LocationSendMessage(
+        is_buy = False
+        message = LocationSendMessage(
             title='消息地點',
             address='桃園',
             latitude=24.984210,
