@@ -300,7 +300,7 @@ def handle_message(event):
         _cols = getmomo(event.message.text)
         message = get_push_msg(_cols)
         if (message is None):
-            message = TextSendMessage(text='買沒:{}'.format(event.message.text[1:]))       
+            message = TextSendMessage(text='買沒:{}'.format(event.message.text))       
     elif is_buy:
         print('keyword={}'.format(event.message.text))
         _cols = getmomo(event.message.text)
