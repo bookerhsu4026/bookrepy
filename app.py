@@ -61,11 +61,11 @@ def getmomo(keyword):
     
     _html = etree.HTML(response.text)
     _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
-    _img_columns = []
+    _img_data = []
     
     if len(_imgs) > 1:   
         for idx, img in enumerate(_imgs, start=0):
-            _img_columns.append({
+            _img_data.append({
                 'image_url':img.attrib['src'],
                 'label':img.attrib['alt'][:12],
                 'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
@@ -75,8 +75,26 @@ def getmomo(keyword):
         #end loop
 
     #endif
-    return _img_columns
+    return _img_data
 
+def get_push_msg(img_data):
+
+    if (len(img_data) > 0):
+        _msg_columns = []
+        for col in img_data:
+            _msg_columns.append(ImageCarouselColumn(
+                        image_url=col['image_url'],
+                        action=URITemplateAction(
+                            label=col['label'],
+                            uri=col['uri']
+                        )
+                    )
+                )
+        #end for    
+
+        return _msg_columns;
+    #end if
+    return null;
 #end def
 
 
@@ -277,28 +295,17 @@ def handle_message(event):
 #                ]
 #            )
 #        )
+    elif event.message.text[0] == '買':
+         print('keyword={}'.format(event.message.text[1:]))
+        _cols = getmomo(event.message.text[1:])
+        message = get_push_msg(_cols)
+        if (message is None):
+            message = TextSendMessage(text='買沒:{}'.format(event.message.text[1:]))       
     elif is_buy:
         print('keyword={}'.format(event.message.text))
         _cols = getmomo(event.message.text)
-        if (len(_cols) > 0):
-            _msgcols = []
-            for col in _cols:
-                _msgcols.append(ImageCarouselColumn(
-                            image_url=col['image_url'],
-                            action=URITemplateAction(
-                                label=col['label'],
-                                uri=col['uri']
-                            )
-                        )
-                    )
-        
-            message = TemplateSendMessage(
-                    alt_text=event.message.text,
-                    template=ImageCarouselTemplate(
-                        columns=_msgcols
-                    )
-                )
-        else:
+        message = get_push_msg(_cols)
+        if (message is None):
             message = TextSendMessage(text='買沒:{}'.format(event.message.text))
     else:
         message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
