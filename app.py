@@ -108,12 +108,13 @@ def handle_message(event):
 
     print('uid: '+uid)
     print('name:'+nameid)
+    print('is_buy:'+is_buy)
 
     # 傳送圖片
     if event.message.text == '買東西':
+        is_buy = True
         message = TextSendMessage(text='喵買啥:')
 #    elif event.message.text == '買東西':
-#        is_buy = True
 #        message = ImageSendMessage(
 #            original_content_url='https://i.imgur.com/vxQMxtm.png',
 #            preview_image_url='https://i.imgur.com/vxQMxtm.png'
@@ -126,7 +127,7 @@ def handle_message(event):
         )
     # 傳送位置
     elif event.message.text == '我要看發生地點':
-        message = LocationSendMessage(
+message = LocationSendMessage(
             title='消息地點',
             address='桃園',
             latitude=24.984210,
@@ -134,6 +135,7 @@ def handle_message(event):
         )
     # 傳送貼圖
     elif event.message.text == '給我一個貼圖':
+        is_buy = False
         message = StickerSendMessage(
             package_id='1',
             sticker_id='1'
@@ -273,7 +275,7 @@ def handle_message(event):
 #                ]
 #            )
 #        )
-    else:
+    elif is_buy:
         print('keyword={}'.format(event.message.text))
         _cols = getmomo(event.message.text)
         if (len(_cols) > 0):
@@ -296,8 +298,8 @@ def handle_message(event):
                 )
         else:
             message = TextSendMessage(text='買沒:{}'.format(event.message.text))
-#    else:
-#        message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
+    else:
+        message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
         
     line_bot_api.reply_message(event.reply_token,message)
 
