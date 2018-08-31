@@ -111,7 +111,7 @@ def handle_message(event):
 
     # 傳送圖片
     if event.message.text == '買東西':
-        global is_buy = True
+        is_buy = True
         message = TextSendMessage(text='喵買啥:')
 #    elif event.message.text == '買東西':
 #        is_buy = True
