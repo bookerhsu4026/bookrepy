@@ -104,13 +104,14 @@ def handle_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     nameid = profile.display_name
     uid = profile.user_id
+    global is_buy
 
     print('uid: '+uid)
     print('name:'+nameid)
 
     # 傳送圖片
     if event.message.text == '買東西':
-        is_buy = True
+        global is_buy = True
         message = TextSendMessage(text='喵買啥:')
 #    elif event.message.text == '買東西':
 #        is_buy = True
