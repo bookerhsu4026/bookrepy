@@ -408,7 +408,7 @@ def handle_message(event):
         else:
             message = TemplateSendMessage(
                 alt_text=text,
-                template=ImageCarouselTemplate(
+                template=CarouselTemplate(
                     columns=_message_columns
                 )
             ) 
@@ -422,7 +422,7 @@ def handle_message(event):
         else:
             message = TemplateSendMessage(
                 alt_text=text,
-                template=ImageCarouselTemplate(
+                template=CarouselTemplate(
                     columns=_message_columns
                 )
             )           
