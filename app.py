@@ -143,14 +143,18 @@ def get_push_msg(img_data):
     if (len(img_data) > 0):
         _msg_columns = []
         for col in img_data:
-            _msg_columns.append(ImageCarouselColumn(
-                        image_url=col['image_url'],
-                        action=URITemplateAction(
+            _msg_columns.append(CarouselColumn(
+                thumbnail_image_url=col['image_url'],
+                title='',
+                text=col['label'],
+                actions=[
+                    URITemplateAction(
                         label=col['label'],
                         uri=col['uri']
-                        )
                     )
-                )
+                ]
+            ))
+                        
         #end for    
 
         return _msg_columns;
