@@ -159,7 +159,7 @@ def get_push_msg(img_data):
 
         return _msg_columns;
     #end if
-    return null;
+    return None
 
 
 # 監聽所有來自 /callback 的 Post Request
@@ -194,15 +194,10 @@ def handle_message(event):
     print('is_buy:'+str(is_buy))
     print(text)
 
-    # 傳送圖片
+    # 買東西
     if text == '買東西':
         is_buy = True
         message = TextSendMessage(text='喵買啥:')
-#    elif event.message.text == '買東西':
-#        message = ImageSendMessage(
-#            original_content_url='https://i.imgur.com/vxQMxtm.png',
-#            preview_image_url='https://i.imgur.com/vxQMxtm.png'
-#        )
     # 傳送影片
     elif text == '試試看影片':
         is_buy = False
@@ -226,141 +221,6 @@ def handle_message(event):
             package_id='1',
             sticker_id='1'
         )
-    # 傳送組圖訊息
-#    elif event.message.text == '我要看報紙':
-#        message = ImagemapSendMessage(
-#            base_url='https://i.imgur.com/PjvwT6d.png',
-#            alt_text='Imagemap',
-#            base_size=BaseSize(height=1040, width=1040),
-#            actions=[
-#                URIImagemapAction(
-#                    link_uri='https://tw.appledaily.com/',
-#                    area=ImagemapArea(
-#                        x=0, y=0, width=520, height=1040
-#                    )
-#                ),
-#                MessageImagemapAction(
-#                    text='您需要付費喔！',
-#                    area=ImagemapArea(
-#                        x=520, y=0, width=520, height=1040
-#                    )
-#                )
-#            ]
-#        )
-#    # 傳送確認介面訊息
-#    elif event.message.text == '我想要評分':
-#        message = TemplateSendMessage(
-#            alt_text='你覺得這個機器人方便嗎？',
-#            template=ConfirmTemplate(
-#                text='你覺得這個機器人方便嗎？',
-#                actions=[
-#                    MessageTemplateAction(
-#                        label='很棒！',
-#                        text='ＧＯＯＤ'
-#                    ),
-#                    MessageTemplateAction(
-#                        label='有待加強',
-#                        text='ＢＡＤ'
-#                    )
-#                ]
-#            )
-#        )
-#        # 傳送按鈕介面訊息
-#    elif event.message.text == '新聞預警':
-#        message = TemplateSendMessage(
-#            alt_text='Buttons template',
-#            template=ButtonsTemplate(
-#                thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
-#                title='Menu',
-#                text='Please select',
-#                actions=[
-#                    MessageTemplateAction(
-#                        label='發生地點',
-#                        text='我要看發生地點'
-#                    ),
-#                    MessageTemplateAction(
-#                        label='文字雲週報',
-#                        text='我要看文字雲週報'
-#                    ),
-#                    URITemplateAction(
-#                        label='Uri',
-#                        uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
-#                    )
-#                ]
-#            )
-#        )
-#    # 傳送多重按鈕介面訊息
-#    elif event.message.text == '所有功能':
-#        message = TemplateSendMessage(
-#            alt_text='Carousel template',
-#            template=CarouselTemplate(
-#                columns=[
-#                    CarouselColumn(
-#                        thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
-#                        title='新聞預警',
-#                        text='新聞來源-蘋果新聞',
-#                        actions=[
-#                            MessageTemplateAction(
-#                                label='發生地點',
-#                                text='我要看發生地點'
-#                            ),
-#                            MessageTemplateAction(
-#                                label='文字雲週報',
-#                                text='我要看文字雲週報'
-#                            ),
-#                            URITemplateAction(
-#                                label='Uri',
-#                                uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
-#                            )
-#                        ]
-#                    ),
-#                    CarouselColumn(
-#                        thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
-#                        title='其他功能',
-#                        text='這裡存放各種功能！',
-#                        actions=[
-#                            MessageTemplateAction(
-#                                label='為機器人評分',
-#                                text='我想要評分'
-#                            ),
-#                            MessageTemplateAction(
-#                                label='更多新聞',
-#                                text='我要看報紙'
-#                            ),
-#                            MessageTemplateAction(
-#                                label='放鬆一下',
-#                                text='給我一個貼圖'
-#                            )
-#                        ]
-#                    )
-#                ]
-#            )
-#        )
-#    # 傳送多重圖片訊息
-#    elif event.message.text == '10':
-#        message = TemplateSendMessage(
-#            alt_text='ImageCarousel template',
-#            template=ImageCarouselTemplate(
-#                columns=[
-#                    ImageCarouselColumn(
-#                        image_url='https://i.imgur.com/N3oQXjW.png',
-#                        action=PostbackTemplateAction(
-#                            label='postback1',
-#                            text='postback text1',
-#                            data='action=buy&itemid=1'
-#                        )
-#                    ),
-#                    ImageCarouselColumn(
-#                        image_url='https://i.imgur.com/OBdCHB9.png',
-#                        action=PostbackTemplateAction(
-#                            label='postback2',
-#                            text='postback text2',
-#                            data='action=buy&itemid=2'
-#                        )
-#                    )
-#                ]
-#            )
-#        )
     elif text[0] == '買':
         text = text[1:]
         print('keyword={}'.format(text))
@@ -372,7 +232,7 @@ def handle_message(event):
         else:
             message = TemplateSendMessage(
                 alt_text=text,
-                template=ImageCarouselTemplate(
+                template=CarouselTemplate(
                     columns=_message_columns
                 )
             )           
