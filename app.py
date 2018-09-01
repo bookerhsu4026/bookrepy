@@ -27,6 +27,44 @@ handler = WebhookHandler('7e27ba98cfbaa7d09bef1435b55deb5f')
 
 #line_bot_api.push_message('Ube6a1a56c1466ec56cee2ae59ca0b17b', TextSendMessage(text='你可以開始了'))
 is_buy = False
+#category
+category_set = ['1900000000',
+        '2900000000',
+        '1100000000',
+        '1200000000',
+        '2000000000',
+        '1300000000',
+        '1400000000',
+        '1500000000',
+        '3100000000',
+        '3900000000',
+        '1700000000',
+        '2500000000',
+        '2700000000',
+        '1800000000',
+        '1600000000',
+        '4000000000',
+        '4100000000',
+        '3500000000',
+        '2400000000',
+        '1900000000',
+        '2900000000',
+        '1100000000',
+        '1200000000',
+        '2000000000',
+        '1300000000',
+        '1400000000',
+        '1500000000',
+        '3100000000',
+        '3900000000',
+        '1700000000',
+        '2500000000',
+        '2700000000',
+        '1800000000',
+        '1600000000',
+        '4000000000',
+        '4100000000',
+        '3500000000']
 
 def getNews():
     """
@@ -102,7 +140,7 @@ def getmomo_search(keyword):
 
 def getmomo_top30(category):
 
-    target_url = 'https://m.momoshop.com.tw/category.momo?cn=1900000000&top30=y&imgSH=fourCardStyle'.format(category)
+    target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category_set[random.randint(0, len(category_set)-1)])
     print(target_url)
     headers = {
            'accept-encoding': 'gzip, deflate, br', 
