@@ -233,9 +233,18 @@ def callback():
         abort(400)
     return 'OK'
 
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id=event.message.package_id,
+            sticker_id=event.message.sticker_id)
+    )
+    
 #訊息傳遞區塊
 @handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
+def handle_text_message(event):
     # 取得個人資料
     profile = line_bot_api.get_profile(event.source.user_id)
     nameid = profile.display_name
@@ -271,7 +280,7 @@ def handle_message(event):
         random.seed()
         message = StickerSendMessage(
             package_id='{}'.format(random.randint(1, 5)),
-            sticker_id='{}'.format(random.randint(1, 10))
+            sticker_id='{}'.format(random.randint(1, 520))
         )
     elif text[0] == '買':
         text = text[1:]
