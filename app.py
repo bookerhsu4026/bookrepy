@@ -35,10 +35,12 @@ def getNews():
     rss_url = 'http://feeds.feedburner.com/cnaFirstNews'
     # 抓取資料
     rss = feedparser.parse(rss_url)
+    #取亂數
+    idx = random.randint(0, len(rss.entries)-1)
     # 抓取第一個文章標題
-    title = rss['entries'][0]['title']
+    title = rss.entries[idx]['title']
     # 抓取第一個文章標題
-    link = rss.entries[0]['link']
+    link = rss.entries[idx]['link']
     
     tmp = title + ' ' +link
     return tmp
