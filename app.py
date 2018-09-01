@@ -140,7 +140,7 @@ def getmomo_search(keyword):
 
 def getmomo_top30(category):
 
-    target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category_set[random.randint(0, len(category_set)-1)])
+    target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category)
     print(target_url)
     headers = {
            'accept-encoding': 'gzip, deflate, br', 
@@ -291,7 +291,7 @@ def handle_message(event):
             )           
     elif text == 'top30':
         print('keyword={}'.format(text))
-        _data = getmomo_top30(text)
+        _data = getmomo_top30(category_set[random.randint(0, len(category_set)-1)])
         _message_columns = get_push_msg(_data)
         message = None
         if (_message_columns is None):
