@@ -145,8 +145,8 @@ def get_push_msg(img_data):
         for col in img_data:
             _msg_columns.append(CarouselColumn(
                 thumbnail_image_url=col['image_url'],
-                title='',
-                text=col['label'],
+                title='this is menu2',
+                text='description2',
                 actions=[
                     URITemplateAction(
                         label=col['label'],
