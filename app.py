@@ -115,11 +115,11 @@ def getmomo_top30(category):
         return []
     
     html = etree.HTML(response.text)
-    imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
+    _imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
     _img_data = []
     
     if len(_imgs) > 1:   
-        for idx, img in enumerate(_img_data, start=0):
+        for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
