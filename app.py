@@ -228,7 +228,7 @@ def handle_message(event):
         _message_columns = get_push_msg(_data)
         message = None
         if (_message_columns is None):
-            message = TextSendMessage(text='沒賣:{}'.format(text))
+            message = TextSendMessage(text='沒賣 {}'.format(text))
         else:
             message = TemplateSendMessage(
                 alt_text=text,
