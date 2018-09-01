@@ -5,7 +5,7 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests
+import requests, re
 from lxml import etree
 from flask import Flask, request, abort
 
@@ -65,9 +65,15 @@ def getmomo(keyword):
     
     if len(_imgs) > 1:   
         for idx, img in enumerate(_imgs, start=0):
+            _alt = img.attrib['alt']
+            match = re.search(r'【.+】(.+)', _alt)
+            if match is None:
+                _alt = _alt[:12]
+            else:
+                _alt = match.group(1)[:12]
             _img_data.append({
                 'image_url':img.attrib['src'],
-                'label':img.attrib['alt'][:12],
+                'label':_alt,
                 'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
             })
             if idx > 4:
