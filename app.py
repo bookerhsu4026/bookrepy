@@ -68,9 +68,9 @@ def getmomo_search(keyword):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
-                _alt = _alt[:12]
+                _alt = _alt
             else:
-                _alt = match.group(1)[:12]
+                _alt = match.group(1)
             _img_data.append({
                 'image_url':img.attrib['src'],
                 'label':_alt,
@@ -123,9 +123,9 @@ def getmomo_top30(category):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
-                _alt = _alt[:12]
+                _alt = _alt
             else:
-                _alt = match.group(1)[:12]
+                _alt = match.group(1)
             _img_data.append({
                 'image_url':img.attrib['org'],
                 'label':_alt,
@@ -145,11 +145,11 @@ def get_push_msg(img_data):
         for col in img_data:
             _msg_columns.append(CarouselColumn(
                 thumbnail_image_url=col['image_url'],
-                title='this is menu2',
-                text='description2',
+#                title='',
+                text=col['label'],
                 actions=[
                     URITemplateAction(
-                        label=col['label'],
+                        label=col['label'][:12],
                         uri=col['uri']
                     )
                 ]
