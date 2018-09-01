@@ -28,7 +28,7 @@ handler = WebhookHandler('7e27ba98cfbaa7d09bef1435b55deb5f')
 #line_bot_api.push_message('Ube6a1a56c1466ec56cee2ae59ca0b17b', TextSendMessage(text='你可以開始了'))
 is_buy = False
 
-def getmomo(keyword):
+def getmomo_search(keyword):
 
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
     print(target_url)
@@ -82,6 +82,82 @@ def getmomo(keyword):
 
     #endif
     return _img_data
+
+def getmomo_top30(category):
+
+    target_url = 'https://m.momoshop.com.tw/category.momo?cn=1900000000&top30=y&imgSH=fourCardStyle'.format(category)
+    print(target_url)
+    headers = {
+           'accept-encoding': 'gzip, deflate, br', 
+           'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7', 
+           'Cache-Control': 'no-cache',
+           'pragma': 'no-cache',
+           'Upgrade-Insecure-Requests': '1',
+           'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+           'content-type': 'application/x-www-form-urlencoded',
+           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+           'cookie':''
+           }
+
+    # handle request body
+    try:
+        requests.packages.urllib3.disable_warnings()
+        response = requests.get(url=target_url, headers=headers)
+    except requests.exceptions.Timeout:
+        # Maybe set up for a retry, or continue in a retry loop
+        return []
+    except requests.exceptions.TooManyRedirects:
+        # Tell the user their URL was bad and try a different one
+        return []
+    except requests.exceptions.RequestException as e:
+        # catastrophic error. bail.
+        print(e)
+        return []
+    
+    html = etree.HTML(response.text)
+    imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
+    _img_data = []
+    
+    if len(_imgs) > 1:   
+        for idx, img in enumerate(_imgs, start=0):
+            _alt = img.attrib['alt']
+            match = re.search(r'【.+】(.+)', _alt)
+            if match is None:
+                _alt = _alt[:12]
+            else:
+                _alt = match.group(1)[:12]
+            _img_data.append({
+                'image_url':img.attrib['org'],
+                'label':_alt,
+                'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
+            })
+            if idx > 4:
+                break
+        #end loop
+
+    #endif
+    return _img_data
+
+def get_push_msg(img_data):
+
+    if (len(img_data) > 0):
+        _msg_columns = []
+        for col in img_data:
+            _msg_columns.append(ImageCarouselColumn(
+                        image_url=col['image_url'],
+                        action=URITemplateAction(
+                        label=col['label'],
+                        uri=col['uri']
+                        )
+                    )
+                )
+        #end for    
+
+        return _msg_columns;
+    #end if
+    return null;
+
+#end def
 
 def get_push_msg(img_data):
 
@@ -306,7 +382,7 @@ def handle_message(event):
     elif text[0] == '買':
         text = text[1:]
         print('keyword={}'.format(text))
-        _data = getmomo(text)
+        _data = getmomo_search(text)
         _message_columns = get_push_msg(_data)
         message = None
         if (_message_columns is None):
@@ -318,9 +394,23 @@ def handle_message(event):
                     columns=_message_columns
                 )
             )           
+    elif text == 'top30':
+        print('keyword={}'.format(text))
+        _data = getmomo_top30(text)
+        _message_columns = get_push_msg(_data)
+        message = None
+        if (_message_columns is None):
+            message = TextSendMessage(text='沒:{}'.format(text))
+        else:
+            message = TemplateSendMessage(
+                alt_text=text,
+                template=ImageCarouselTemplate(
+                    columns=_message_columns
+                )
+            ) 
     elif is_buy:
         print('keyword={}'.format(text))
-        _data = getmomo(text)
+        _data = getmomo_search(text)
         _message_columns = get_push_msg(_data)
         message = None
         if (len(_message_columns) == 0):
