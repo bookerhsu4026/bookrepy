@@ -28,6 +28,21 @@ handler = WebhookHandler('7e27ba98cfbaa7d09bef1435b55deb5f')
 #line_bot_api.push_message('Ube6a1a56c1466ec56cee2ae59ca0b17b', TextSendMessage(text='你可以開始了'))
 is_buy = False
 
+def getNews():
+    """
+    建立一個抓最新消息的function
+    """
+    rss_url = 'http://feeds.feedburner.com/cnaFirstNews'
+    # 抓取資料
+    rss = feedparser.parse(rss_url)
+    # 抓取第一個文章標題
+    title = rss['entries'][0]['title']
+    # 抓取第一個文章標題
+    link = rss.entries[0]['link']
+    
+    tmp = title + ' ' +link
+    return tmp
+
 def getmomo_search(keyword):
 
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
@@ -195,16 +210,13 @@ def handle_message(event):
     print(text)
 
     # 買東西
-    if text == '買東西':
+    if text == '我要買東西':
         is_buy = True
-        message = TextSendMessage(text='喵買啥:')
+        message = TextSendMessage(text='貓喵買啥:')
     # 傳送影片
-    elif text == '試試看影片':
+    elif text == '我要看新聞':
         is_buy = False
-        message = VideoSendMessage(
-            original_content_url='https://i.imgur.com/hOKAE06.mp4',
-            preview_image_url='https://i.imgur.com/hOKAE06.mp4'
-        )
+        message =TextSendMessage( getNews())
     # 傳送位置
     elif text == '我要看發生地點':
         is_buy = False
@@ -256,7 +268,7 @@ def handle_message(event):
         _message_columns = get_push_msg(_data)
         message = None
         if (len(_message_columns) == 0):
-            message = TextSendMessage(text='買沒 {}'.format(text))
+            message = TextSendMessage(text='沒賣 {}'.format(text))
         else:
             message = TemplateSendMessage(
                 alt_text=text,
@@ -265,7 +277,7 @@ def handle_message(event):
                 )
             )           
     else:
-        message = TextSendMessage(text='肥貓喵:{}'.format(text))
+        message = TextSendMessage(text='貓喵@#$:{}'.format(text))
         
     print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
