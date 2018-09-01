@@ -277,13 +277,13 @@ def handle_text_message(event):
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
-        package_id = '{}'.format(random.randint(1, 5)
-        sticker_id = '{}'.format(random.randint(1, 520)
+        package_id = '{}'.format(random.randint(1, 5))
+        sticker_id = '{}'.format(random.randint(1, 520))
         print('package_id: '+package_id)
         print('sticker_id:'+sticker_id)
         message = StickerSendMessage(
-            package_id=package_id),
-            sticker_id=sticker_id)
+            package_id=package_id,
+            sticker_id=sticker_id
         )
     elif text[0] == '買':
         text = text[1:]
