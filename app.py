@@ -119,7 +119,7 @@ def getmomo_top30(category):
     _img_data = []
     
     if len(_imgs) > 1:   
-        for idx, img in enumerate(_imgs, start=0):
+        for idx, img in enumerate(_img_data, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
