@@ -129,14 +129,15 @@ def handle_message(event):
     nameid = profile.display_name
     uid = profile.user_id
     global is_buy
+    text = event.message.text
 
     print('uid: '+uid)
     print('name:'+nameid)
     print('is_buy:'+str(is_buy))
-    print(event.message.text)
+    print(text)
 
     # 傳送圖片
-    if event.message.text == '買東西':
+    if text == '買東西':
         is_buy = True
         message = TextSendMessage(text='喵買啥:')
 #    elif event.message.text == '買東西':
@@ -145,14 +146,14 @@ def handle_message(event):
 #            preview_image_url='https://i.imgur.com/vxQMxtm.png'
 #        )
     # 傳送影片
-    elif event.message.text == '試試看影片':
+    elif text == '試試看影片':
         is_buy = False
         message = VideoSendMessage(
             original_content_url='https://i.imgur.com/hOKAE06.mp4',
             preview_image_url='https://i.imgur.com/hOKAE06.mp4'
         )
     # 傳送位置
-    elif event.message.text == '我要看發生地點':
+    elif text == '我要看發生地點':
         is_buy = False
         message = LocationSendMessage(
             title='消息地點',
@@ -161,7 +162,7 @@ def handle_message(event):
             longitude=121.293203
         )
     # 傳送貼圖
-    elif event.message.text == '給我一個貼圖':
+    elif text == '給我一個貼圖':
         is_buy = False
         message = StickerSendMessage(
             package_id='1',
@@ -302,28 +303,37 @@ def handle_message(event):
 #                ]
 #            )
 #        )
-#    elif event.message.text[0] == '買':
-#         print('keyword={}'.format(event.message.text))
-#        _cols = getmomo(event.message.text)
-#        message = get_push_msg(_cols)
-#        if (message is None):
-#            message = TextSendMessage(text='買沒:{}'.format(event.message.text))       
+    elif text[0] == '買':
+        text = text[1:]
+        print('keyword={}'.format(text))
+        _data = getmomo(text)
+        _message_columns = get_push_msg(_data)
+        message = None
+        if (_message_columns is None):
+            message = TextSendMessage(text='買沒:{}'.format(text))
+        else:
+            message = TemplateSendMessage(
+                alt_text=text,
+                template=ImageCarouselTemplate(
+                    columns=_message_columns
+                )
+            )           
     elif is_buy:
-        print('keyword={}'.format(event.message.text))
-        _data = getmomo(event.message.text)
+        print('keyword={}'.format(text))
+        _data = getmomo(text)
         _message_columns = get_push_msg(_data)
         message = None
         if (len(_message_columns) == 0):
-            message = TextSendMessage(text='買沒:{}'.format(event.message.text))
+            message = TextSendMessage(text='買沒:{}'.format(text))
         else:
             message = TemplateSendMessage(
-                alt_text=event.message.text,
+                alt_text=text,
                 template=ImageCarouselTemplate(
                     columns=_message_columns
                 )
             )           
     else:
-        message = TextSendMessage(text='肥貓喵:{}'.format(event.message.text))
+        message = TextSendMessage(text='肥貓喵:{}'.format(text))
         
     print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
