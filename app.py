@@ -28,7 +28,7 @@ handler = WebhookHandler('7e27ba98cfbaa7d09bef1435b55deb5f')
 #line_bot_api.push_message('Ube6a1a56c1466ec56cee2ae59ca0b17b', TextSendMessage(text='你可以開始了'))
 is_buy = False
 #category
-category_set = ['1900000000',
+category_set = ('1900000000',
         '2900000000',
         '1100000000',
         '1200000000',
@@ -64,7 +64,7 @@ category_set = ['1900000000',
         '1600000000',
         '4000000000',
         '4100000000',
-        '3500000000']
+        '3500000000')
 
 def getNews():
     """
@@ -119,7 +119,7 @@ def getmomo_search(keyword):
     _img_data = []
     
     if len(_imgs) > 1:   
-        for idx, img in enumerate(_imgs, start=0):
+        for img in _imgs:
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
@@ -131,8 +131,6 @@ def getmomo_search(keyword):
                 'label':_alt,
                 'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
             })
-            if idx > 4:
-                break
         #end loop
 
     #endif
@@ -174,7 +172,7 @@ def getmomo_top30(category):
     _img_data = []
     
     if len(_imgs) > 1:   
-        for idx, img in enumerate(_imgs, start=0):
+        for img in _imgs:
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
@@ -186,8 +184,6 @@ def getmomo_top30(category):
                 'label':_alt,
                 'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
             })
-            if idx > 4:
-                break
         #end loop
 
     #endif
@@ -197,7 +193,7 @@ def get_push_msg(img_data):
 
     if (len(img_data) > 0):
         _msg_columns = []
-        for col in img_data:
+        for idx, col in enumerate(img_data, start=0):
             _msg_columns.append(CarouselColumn(
                 thumbnail_image_url=col['image_url'],
 #                title='',
@@ -209,8 +205,11 @@ def get_push_msg(img_data):
                     )
                 ]
             ))
+                
+            if idx > 8:
+                break
                         
-        #end for    
+        #end for 
 
         return _msg_columns;
     #end if
@@ -291,7 +290,7 @@ def handle_message(event):
             )           
     elif text == 'top30':
         print('keyword={}'.format(text))
-        _data = getmomo_top30(category_set[random.randint(0, len(category_set)-1)])
+        _data = getmomo_top30(list(category_set)[random.randint(0, len(category_set)-1)])
         _message_columns = get_push_msg(_data)
         message = None
         if (_message_columns is None):
