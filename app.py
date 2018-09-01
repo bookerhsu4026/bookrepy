@@ -149,7 +149,7 @@ def get_push_msg(img_data):
                 text=col['label'],
                 actions=[
                     URITemplateAction(
-                        label=col['label'][:12],
+                        label='去逛逛',
                         uri=col['uri']
                     )
                 ]
