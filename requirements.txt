@@ -2,3 +2,5 @@ gunicorn
 Flask
 line-bot-sdk
 lxml
+re
+feedparser

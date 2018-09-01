@@ -5,7 +5,7 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests, re
+import requests, re, feedparser
 from lxml import etree
 from flask import Flask, request, abort
 
