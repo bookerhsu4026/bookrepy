@@ -5,7 +5,7 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests, re, feedparser
+import requests, re, feedparser, random
 from lxml import etree
 from flask import Flask, request, abort
 
@@ -229,9 +229,10 @@ def handle_message(event):
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
+        random.seed()
         message = StickerSendMessage(
-            package_id='1',
-            sticker_id='1'
+            package_id='{}'.format(random.randint(1, 5)),
+            sticker_id='{}'.format(random.randint(1, 10))
         )
     elif text[0] == '買':
         text = text[1:]

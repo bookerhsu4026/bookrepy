@@ -3,3 +3,4 @@ Flask
 line-bot-sdk
 lxml
 feedparser
+random
