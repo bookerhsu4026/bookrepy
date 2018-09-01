@@ -242,7 +242,7 @@ def handle_message(event):
         _message_columns = get_push_msg(_data)
         message = None
         if (_message_columns is None):
-            message = TextSendMessage(text='沒:{}'.format(text))
+            message = TextSendMessage(text='沒 {}'.format(text))
         else:
             message = TemplateSendMessage(
                 alt_text=text,
@@ -256,7 +256,7 @@ def handle_message(event):
         _message_columns = get_push_msg(_data)
         message = None
         if (len(_message_columns) == 0):
-            message = TextSendMessage(text='買沒:{}'.format(text))
+            message = TextSendMessage(text='買沒 {}'.format(text))
         else:
             message = TemplateSendMessage(
                 alt_text=text,
