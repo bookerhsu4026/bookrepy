@@ -47,7 +47,7 @@ def getmomo_search(keyword):
     # handle request body
     try:
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(url=target_url, headers=headers)
+        response = requests.get(url=target_url, headers=headers, timeout=5)
     except requests.exceptions.Timeout:
         # Maybe set up for a retry, or continue in a retry loop
         return []
@@ -102,7 +102,7 @@ def getmomo_top30(category):
     # handle request body
     try:
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(url=target_url, headers=headers)
+        response = requests.get(url=target_url, headers=headers, timeout=5)
     except requests.exceptions.Timeout:
         # Maybe set up for a retry, or continue in a retry loop
         return []
@@ -160,28 +160,6 @@ def get_push_msg(img_data):
         return _msg_columns;
     #end if
     return null;
-
-#end def
-
-def get_push_msg(img_data):
-
-    if (len(img_data) > 0):
-        _msg_columns = []
-        for col in img_data:
-            _msg_columns.append(ImageCarouselColumn(
-                        image_url=col['image_url'],
-                        action=URITemplateAction(
-                            label=col['label'],
-                            uri=col['uri']
-                        )
-                    )
-                )
-        #end for
-
-        return _msg_columns;
-    #end if
-    return null;
-#end def
 
 
 # 監聽所有來自 /callback 的 Post Request
