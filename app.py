@@ -369,7 +369,7 @@ def handle_sticker_message(event):
         event.reply_token,
         StickerSendMessage(
             package_id=1,
-            sticker_id=460)
+            sticker_id=406)
     )
 
 @handler.add(MessageEvent, message=LocationMessage)
