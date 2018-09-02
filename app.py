@@ -436,7 +436,7 @@ def handle_follow(event):
     nameid = profile.display_name
     uid = profile.user_id
 
-    print('follow uid: '+uid, name:'+nameid)
+    print('follow uid: '+uid+', name:'+nameid)
     
     line_bot_api.reply_message(
         event.reply_token, TextSendMessage(text='Got follow'))
@@ -454,7 +454,7 @@ def handle_join(event):
     nameid = profile.display_name
     uid = profile.user_id
 
-    print('join uid: '+uid, name:'+nameid)
+    print('join uid: '+uid+', name:'+nameid)
     
     line_bot_api.reply_message(
         event.reply_token,
