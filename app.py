@@ -307,7 +307,7 @@ def handle_text_message(event):
         _data = getmomo_search(text)
         _message_columns = get_push_msg(_data)
         message = None
-        if message_columns is None:
+        if _message_columns is None:
 #            message = TextSendMessage(text='沒賣 {}'.format(text))
             message = StickerSendMessage(
                     package_id=1,
