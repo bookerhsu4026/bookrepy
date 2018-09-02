@@ -368,8 +368,8 @@ def handle_sticker_message(event):
     line_bot_api.reply_message(
         event.reply_token,
         StickerSendMessage(
-            package_id=event.message.package_id,
-            sticker_id=event.message.sticker_id)
+            package_id=1,
+            sticker_id=460)
     )
 
 @handler.add(MessageEvent, message=LocationMessage)
