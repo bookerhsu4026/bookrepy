@@ -277,10 +277,26 @@ def handle_text_message(event):
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
-        package_id = '{}'.format(random.randint(1, 5))
-        sticker_id = '{}'.format(random.randint(1, 520))
-        print('package_id: '+package_id)
-        print('sticker_id:'+sticker_id)
+        package_id = random.randint(1, 2)
+        sticker_id = 1
+        if package_id == '1':
+            sticker_id = random.randint(1, 88)
+            if sticker_id > 17:
+                sticker_id = sticker_id + 83
+            if sticker_id > 139:
+                sticker_id = sticker_id + 262
+        else:
+            sticker_id = random.randint(18, 114)
+            if sticker_id < 17:
+                sticker_id = sticker_id + 17
+            if sticker_id > 47:
+                sticker_id = sticker_id + 93
+            if sticker_id > 179:
+                sticker_id = sticker_id + 313
+                
+#        sticker_id = '{}'.format(sticker_id)
+        print('package_id: '+str(package_id))
+        print('sticker_id:'+str(sticker_id))
         message = StickerSendMessage(
             package_id=package_id,
             sticker_id=sticker_id
@@ -291,8 +307,12 @@ def handle_text_message(event):
         _data = getmomo_search(text)
         _message_columns = get_push_msg(_data)
         message = None
-        if (_message_columns is None):
-            message = TextSendMessage(text='沒賣 {}'.format(text))
+        if message_columns is None:
+#            message = TextSendMessage(text='沒賣 {}'.format(text))
+            message = StickerSendMessage(
+                    package_id=1,
+                    sticker_id=8
+                )
         else:
             message = TemplateSendMessage(
                 alt_text=text,
@@ -305,8 +325,12 @@ def handle_text_message(event):
         _data = getmomo_top30(list(category_set)[random.randint(0, len(category_set)-1)])
         _message_columns = get_push_msg(_data)
         message = None
-        if (_message_columns is None):
-            message = TextSendMessage(text='沒 {}'.format(text))
+        if _message_columns is None:
+#            message = TextSendMessage(text='沒 {}'.format(text))
+            message = StickerSendMessage(
+                    package_id=1,
+                    sticker_id=420
+                )
         else:
             message = TemplateSendMessage(
                 alt_text=text,
@@ -319,8 +343,12 @@ def handle_text_message(event):
         _data = getmomo_search(text)
         _message_columns = get_push_msg(_data)
         message = None
-        if (len(_message_columns) == 0):
-            message = TextSendMessage(text='沒賣 {}'.format(text))
+        if _message_columns is None:
+#            message = TextSendMessage(text='沒賣 {}'.format(text))
+            message = StickerSendMessage(
+                    package_id=2,
+                    sticker_id=39
+                )
         else:
             message = TemplateSendMessage(
                 alt_text=text,
