@@ -269,7 +269,7 @@ def handle_text_message(event):
     elif text == '我要看新聞':
         is_buy = False
         text_message = getNews()
-        message =[TextSendMessage(text_message[i]) for i in range(0,4)]
+        message =[TextSendMessage(text_message[i]) for i in range(0,len(text_message)-1)]
     # 傳送位置
 #    elif text == '我要看發生地點':
 #        is_buy = False
