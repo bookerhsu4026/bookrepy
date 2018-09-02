@@ -8,7 +8,7 @@ Created on Sat Aug 18 01:00:17 2018
 import requests, re, feedparser, random
 from lxml import etree
 from flask import Flask, request, abort
-from chatterbot import ChatBot
+#from chatterbot import ChatBot
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -82,10 +82,10 @@ category_set = ('1900000000',
         '3500000000')
 
 # 建立一個 ChatBot 物件
-chatbot = ChatBot(
-    'Ron Obvious',
-    trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
-)
+#chatbot = ChatBot(
+#    'Ron Obvious',
+#    trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
+#)
 
 # 基於英文的自動學習套件
 chatbot.train("chatterbot.corpus.english")
@@ -368,7 +368,7 @@ def handle_text_message(event):
                 )
             )           
     else:
-        response_message = chatbot.get_response(message)
+        response_message = text #chatbot.get_response(message)
         message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))
         
     print('is_buy:'+str(is_buy))
