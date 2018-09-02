@@ -15,7 +15,21 @@ from linebot import (
 from linebot.exceptions import (
     InvalidSignatureError
 )
-from linebot.models import *
+from linebot.models import (
+    MessageEvent, TextMessage, TextSendMessage,
+    SourceUser, SourceGroup, SourceRoom,
+    TemplateSendMessage, ConfirmTemplate, MessageAction,
+    ButtonsTemplate, ImageCarouselTemplate, ImageCarouselColumn, URIAction,
+    PostbackAction, DatetimePickerAction,
+    CameraAction, CameraRollAction, LocationAction,
+    CarouselTemplate, CarouselColumn, PostbackEvent,
+    StickerMessage, StickerSendMessage, LocationMessage, LocationSendMessage,
+    ImageMessage, VideoMessage, AudioMessage, FileMessage,
+    UnfollowEvent, FollowEvent, JoinEvent, LeaveEvent, BeaconEvent,
+    FlexSendMessage, BubbleContainer, ImageComponent, BoxComponent,
+    TextComponent, SpacerComponent, IconComponent, ButtonComponent,
+    SeparatorComponent, QuickReply, QuickReplyButton
+)
 
 app = Flask(__name__)
 
@@ -236,16 +250,7 @@ def callback():
     except InvalidSignatureError:
         abort(400)
     return 'OK'
-
-@handler.add(MessageEvent, message=StickerMessage)
-def handle_sticker_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        StickerSendMessage(
-            package_id=event.message.package_id,
-            sticker_id=event.message.sticker_id)
-    )
-    
+  
 #訊息傳遞區塊
 @handler.add(MessageEvent, message=TextMessage)
 def handle_text_message(event):
@@ -270,15 +275,6 @@ def handle_text_message(event):
         is_buy = False
         text_message = getNews()
         message =[TextSendMessage(text_message[i]) for i in range(0,len(text_message)-1)]
-    # 傳送位置
-#    elif text == '我要看發生地點':
-#        is_buy = False
-#        message = LocationSendMessage(
-#            title='消息地點',
-#            address='桃園',
-#            latitude=24.984210,
-#            longitude=121.293203
-#        )
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
@@ -366,6 +362,107 @@ def handle_text_message(event):
         
     print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
+
+@handler.add(MessageEvent, message=StickerMessage)
+def handle_sticker_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        StickerSendMessage(
+            package_id=event.message.package_id,
+            sticker_id=event.message.sticker_id)
+    )
+
+@handler.add(MessageEvent, message=LocationMessage)
+def handle_location_message(event):
+    line_bot_api.reply_message(
+        event.reply_token,
+        LocationSendMessage(
+            title=event.message.title, address=event.message.address,
+            latitude=event.message.latitude, longitude=event.message.longitude
+        )
+    )
+
+# Other Message Type
+@handler.add(MessageEvent, message=(ImageMessage, VideoMessage, AudioMessage))
+def handle_content_message(event):
+    if isinstance(event.message, ImageMessage):
+        ext = 'jpg'
+    elif isinstance(event.message, VideoMessage):
+        ext = 'mp4'
+    elif isinstance(event.message, AudioMessage):
+        ext = 'm4a'
+    else:
+        return
+
+#    message_content = line_bot_api.get_message_content(event.message.id)
+#    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix=ext + '-', delete=False) as tf:
+#        for chunk in message_content.iter_content():
+#            tf.write(chunk)
+#        tempfile_path = tf.name
+#
+#    dist_path = tempfile_path + '.' + ext
+#    dist_name = os.path.basename(dist_path)
+#    os.rename(tempfile_path, dist_path)
+#
+#    line_bot_api.reply_message(
+#        event.reply_token, [
+#            TextSendMessage(text='Save content.'),
+#            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
+#        ])
+
+
+@handler.add(MessageEvent, message=FileMessage)
+def handle_file_message(event):
+    message_content = line_bot_api.get_message_content(event.message.id)
+#    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-', delete=False) as tf:
+#        for chunk in message_content.iter_content():
+#            tf.write(chunk)
+#        tempfile_path = tf.name
+#
+#    dist_path = tempfile_path + '-' + event.message.file_name
+#    dist_name = os.path.basename(dist_path)
+#    os.rename(tempfile_path, dist_path)
+#
+#    line_bot_api.reply_message(
+#        event.reply_token, [
+#            TextSendMessage(text='Save file.'),
+#            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
+#        ])
+
+@handler.add(FollowEvent)
+def handle_follow(event):
+
+    profile = line_bot_api.get_profile(event.source.user_id)
+    nameid = profile.display_name
+    uid = profile.user_id
+
+    print('follow uid: '+uid, name:'+nameid)
+    
+    line_bot_api.reply_message(
+        event.reply_token, TextSendMessage(text='Got follow'))
+
+
+@handler.add(UnfollowEvent)
+def handle_unfollow():
+    app.logger.info("Got Unfollow")
+
+
+@handler.add(JoinEvent)
+def handle_join(event):
+    
+    profile = line_bot_api.get_profile(event.source.user_id)
+    nameid = profile.display_name
+    uid = profile.user_id
+
+    print('join uid: '+uid, name:'+nameid)
+    
+    line_bot_api.reply_message(
+        event.reply_token,
+        TextSendMessage(text='Joined this ' + event.source.type))
+
+@handler.add(LeaveEvent)
+def handle_leave():
+    app.logger.info("Got leave")
 
 
 if __name__ == '__main__':
