@@ -73,14 +73,18 @@ def getNews():
     rss_url = 'http://feeds.feedburner.com/cnaFirstNews'
     # 抓取資料
     rss = feedparser.parse(rss_url)
-    #取亂數
-    idx = random.randint(0, len(rss.entries)-1)
-    # 抓取第一個文章標題
-    title = rss.entries[idx]['title']
-    # 抓取第一個文章標題
-    link = rss.entries[idx]['link']
+#    # 抓取第一個文章標題
+#    title = rss['entries'][0]['title']
+#    # 抓取第一個文章標題
+#    link = rss.entries[0]['link']
+#    
+#    tmp = title + ' ' +link
+    tmp = []
+    for i, entry in enumerate(rss.entries, start=0):
+        tmp.append(entry['title'] + ' ' + entry['link'])
+        if i > 3:
+            break
     
-    tmp = title + ' ' +link
     return tmp
 
 def getmomo_search(keyword):
@@ -264,16 +268,17 @@ def handle_text_message(event):
     # 傳送影片
     elif text == '我要看新聞':
         is_buy = False
-        message =TextSendMessage( getNews())
+        text_message = getNews()
+        message =[TextSendMessage(text_message[i]) for i in range(0,4)]
     # 傳送位置
-    elif text == '我要看發生地點':
-        is_buy = False
-        message = LocationSendMessage(
-            title='消息地點',
-            address='桃園',
-            latitude=24.984210,
-            longitude=121.293203
-        )
+#    elif text == '我要看發生地點':
+#        is_buy = False
+#        message = LocationSendMessage(
+#            title='消息地點',
+#            address='桃園',
+#            latitude=24.984210,
+#            longitude=121.293203
+#        )
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
