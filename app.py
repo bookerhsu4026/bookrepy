@@ -88,7 +88,7 @@ category_set = ('1900000000',
 #)
 
 # 基於英文的自動學習套件
-chatbot.train("chatterbot.corpus.english")
+#chatbot.train("chatterbot.corpus.english")
 
 def getNews():
     """
