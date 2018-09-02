@@ -310,8 +310,8 @@ def handle_text_message(event):
         if _message_columns is None:
 #            message = TextSendMessage(text='沒賣 {}'.format(text))
             message = StickerSendMessage(
-                    package_id=1,
-                    sticker_id=8
+                    package_id=2,
+                    sticker_id=152
                 )
         else:
             message = TemplateSendMessage(
