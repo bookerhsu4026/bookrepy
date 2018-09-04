@@ -364,11 +364,6 @@ def handle_text_message(event):
         
     print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
-    time.sleep(1)
-    line_bot_api.push_message(uid, StickerSendMessage(
-                    package_id=2,
-                    sticker_id=30
-                ))
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
