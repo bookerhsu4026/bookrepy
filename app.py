@@ -5,10 +5,9 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests, re, feedparser, random
+import requests, re, feedparser, random, time
 from lxml import etree
 from flask import Flask, request, abort
-#from chatterbot import ChatBot
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -81,15 +80,6 @@ category_set = ('1900000000',
         '4000000000',
         '4100000000',
         '3500000000')
-
-# 建立一個 ChatBot 物件
-#chatbot = ChatBot(
-#    'Ron Obvious',
-#    trainer = 'chatterbot.trainers.ChatterBotCorpusTrainer'
-#)
-
-# 基於英文的自動學習套件
-#chatbot.train("chatterbot.corpus.english")
 
 def getNews():
     """
@@ -334,7 +324,7 @@ def handle_text_message(event):
             )           
     elif text == 'top30':
         print('keyword={}'.format(text))
-        _data = getmomo_top30(list(category_set)[random.randint(0, len(category_set)-1)])
+        _data = getmomo_top30(category_set[random.randint(0, len(category_set)-1)])
         _message_columns = get_push_msg(_data)
         message = None
         if _message_columns is None:
@@ -374,6 +364,11 @@ def handle_text_message(event):
         
     print('is_buy:'+str(is_buy))
     line_bot_api.reply_message(event.reply_token,message)
+    time.sleep(1)
+    line_bot_api.push_message(uid, StickerSendMessage(
+                    package_id=2,
+                    sticker_id=30
+                ))
 
 @handler.add(MessageEvent, message=StickerMessage)
 def handle_sticker_message(event):
