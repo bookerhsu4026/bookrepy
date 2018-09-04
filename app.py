@@ -96,7 +96,7 @@ def getNews():
 #    tmp = title + ' ' +link
     tmp = []
     for i, entry in enumerate(rss.entries, start=0):
-        tmp.append(entry['title'] + ' ' + entry['link'])
+        tmp.append(entry['link']) #entry['title'] + ' ' + entry['link'])
         if i > 3:
             break
     
