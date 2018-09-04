@@ -275,7 +275,7 @@ def handle_text_message(event):
     elif text == '我要看新聞':
         is_buy = False
         text_message = getNews()
-        message =[TextSendMessage(text_message[i]) for i in range(0,len(text_message)-1)]
+        message =TextSendMessage(text_message); #text_message[i]) for i in range(0,len(text_message)-1)]
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
