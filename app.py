@@ -96,7 +96,7 @@ def getNews():
 #    tmp = title + ' ' +link
     tmp = []
     for i, entry in enumerate(rss.entries, start=0):
-        tmp.append(entry['link']) #entry['title'] + ' ' + entry['link'])
+        tmp.append(entry['title'] + ' ' + entry['link'])
         if i > 3:
             break
     
@@ -275,7 +275,7 @@ def handle_text_message(event):
     elif text == '我要看新聞':
         is_buy = False
         text_message = getNews()
-        message =TextSendMessage("\n".join(text_message))
+        message =TextSendMessage("\n\n".join(text_message))
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
