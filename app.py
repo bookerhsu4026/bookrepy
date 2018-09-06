@@ -147,7 +147,7 @@ def getmomo_search_push(keyword,userid):
     
     if len(_imgs) > 1:   
         _msg_columns = []
-        for idx, img enumerate(_imgs, start=0):
+        for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
@@ -224,7 +224,7 @@ def getmomo_top30_push(category,userid):
 
     if len(_imgs) > 1:   
         _msg_columns = []
-        for idx, img enumerate(_imgs, start=0):
+        for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
