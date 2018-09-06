@@ -41,8 +41,8 @@ line_bot_api = LineBotApi('cXtIw9d8+oQbrXZ/3hEBocCNTpsroaNVWid2LiVlekEa8jnhW2CnK
 # 必須放上自己的Channel Secret
 handler = WebhookHandler('7e27ba98cfbaa7d09bef1435b55deb5f')
 
-#line_bot_api.push_message('Ube6a1a56c1466ec56cee2ae59ca0b17b', TextSendMessage(text='你可以開始了'))
 is_buy = False
+
 #category
 category_set = ('1900000000',
         '2900000000',
@@ -83,11 +83,6 @@ category_set = ('1900000000',
         '3500000000')
 
 executor = ThreadPoolExecutor(3)
-
-def some_long_task2(id, date):
-    print("Task #2 started with args: %s %s!" % (id, date))
-    sleep(5)
-    print("Task #2 is done!")
 
 
 def get_news_push(userid):
@@ -146,18 +141,18 @@ def getmomo_search_push(keyword,userid):
     message = None
     
     if len(_imgs) > 1:   
-        _msg_columns = []
+        _columns = []
         for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
-            if match is None:
-                _alt = _alt
-            else:
+            if match is not None:
                 _alt = match.group(1)
-                
-           _msg_columns.append(CarouselColumn(
-                thumbnail_image_url=img.attrib['src'],
-#                title='',
+            
+            #end if
+
+            _colu = CarouselColumn(
+                thumbnail_image_url=img.attrib['org'],
+    #                title='',
                 text=_alt,
                 actions=[
                     URITemplateAction(
@@ -165,27 +160,22 @@ def getmomo_search_push(keyword,userid):
                         uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
                     )
                 ]
-            ))
+            )
+            _columns.append(_colu)
                 
             if idx > 8:
                 break
         #end for
 
         message = TemplateSendMessage(
-            alt_text=text,
+            alt_text='Carousel template',
             template=CarouselTemplate(
-                columns=_message_columns
+                columns=_columns
             )
-        ) 
+        )
 
-    else:
-        message = StickerSendMessage(
-                package_id=2,
-                sticker_id=152
-            ) 
-
+        line_bot_api.push_message(userid, message)
     #end if
-    line_bot_api.push_message(userid, message)
 
 def getmomo_top30_push(category,userid):
 
@@ -223,18 +213,18 @@ def getmomo_top30_push(category,userid):
     message = None
 
     if len(_imgs) > 1:   
-        _msg_columns = []
+        _columns = []
         for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
-            if match is None:
-                _alt = _alt
-            else:
+            if match is not None:
                 _alt = match.group(1)
-                
-           _msg_columns.append(CarouselColumn(
-                thumbnail_image_url=img.attrib['org'],
-#                title='',
+            
+            #end if
+
+            _colu = CarouselColumn(
+                thumbnail_image_url=img.attrib['src'],
+    #                title='',
                 text=_alt,
                 actions=[
                     URITemplateAction(
@@ -242,27 +232,22 @@ def getmomo_top30_push(category,userid):
                         uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
                     )
                 ]
-            ))
+            )
+            _columns.append(_colu)
                 
             if idx > 8:
                 break
         #end for
 
         message = TemplateSendMessage(
-            alt_text=text,
+            alt_text='Carousel template',
             template=CarouselTemplate(
-                columns=_message_columns
+                columns=_columns
             )
-        ) 
-
-    else:
-        message = StickerSendMessage(
-                package_id=2,
-                sticker_id=152
-            ) 
-
+        )
+        
+        line_bot_api.push_message(userid, message)
     #end if
-    line_bot_api.push_message(userid, message)
 
 
 # 監聽所有來自 /callback 的 Post Request
@@ -422,7 +407,8 @@ def handle_content_message(event):
 
 @handler.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
-    message_content = line_bot_api.get_message_content(event.message.id)
+    mm = None
+#    message_content = line_bot_api.get_message_content(event.message.id)
 #    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-', delete=False) as tf:
 #        for chunk in message_content.iter_content():
 #            tf.write(chunk)
