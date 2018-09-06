@@ -106,7 +106,8 @@ def get_news_push(userid):
         line_bot_api.push_message(userid, message)
 
 def getmomo_search_push(keyword,userid):
-
+    print('uid: '+userid)
+    print('keyword:'+keyword)
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
     print(target_url)
     headers = {
@@ -140,7 +141,7 @@ def getmomo_search_push(keyword,userid):
     _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
     message = None
     
-    if len(_imgs) > 1:   
+    if len(_imgs) > 0:   
         _columns = []
         for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
@@ -176,9 +177,11 @@ def getmomo_search_push(keyword,userid):
 
         line_bot_api.push_message(userid, message)
     #end if
+    print('getmomo_search_push:end')
 
 def getmomo_top30_push(category,userid):
-
+    print('uid: '+userid)
+    print('category:'+category)
     target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category)
     print(target_url)
     headers = {
@@ -212,7 +215,7 @@ def getmomo_top30_push(category,userid):
     _imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
     message = None
 
-    if len(_imgs) > 1:   
+    if len(_imgs) > 0:   
         _columns = []
         for idx, img in enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
@@ -248,6 +251,7 @@ def getmomo_top30_push(category,userid):
         
         line_bot_api.push_message(userid, message)
     #end if
+    print('getmomo_top30_push:end')
 
 
 # 監聽所有來自 /callback 的 Post Request
