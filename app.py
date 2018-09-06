@@ -89,6 +89,7 @@ def get_news_push(userid):
     """
     建立一個抓最新消息的function
     """
+    print('uid: '+userid)
     rss_url = 'http://feeds.feedburner.com/cnaFirstNews'
     # 抓取資料
     rss = feedparser.parse(rss_url)
@@ -104,6 +105,8 @@ def get_news_push(userid):
     if (len(tmp)>0):
         message =TextSendMessage("\n".join(tmp))
         line_bot_api.push_message(userid, message)
+    #end if
+    print('get_news_push: end')
 
 def getmomo_search_push(keyword,userid):
     print('uid: '+userid)
