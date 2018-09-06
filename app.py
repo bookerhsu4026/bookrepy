@@ -8,6 +8,7 @@ Created on Sat Aug 18 01:00:17 2018
 import requests, re, feedparser, random, time
 from lxml import etree
 from flask import Flask, request, abort
+from concurrent.futures import ThreadPoolExecutor
 
 from linebot import (
     LineBotApi, WebhookHandler
@@ -81,17 +82,21 @@ category_set = ('1900000000',
         '4100000000',
         '3500000000')
 
-def getNews():
+executor = ThreadPoolExecutor(3)
+
+def some_long_task2(id, date):
+    print("Task #2 started with args: %s %s!" % (id, date))
+    sleep(5)
+    print("Task #2 is done!")
+
+
+def get_news_push(userid):
     """
     建立一個抓最新消息的function
     """
     rss_url = 'http://feeds.feedburner.com/cnaFirstNews'
     # 抓取資料
     rss = feedparser.parse(rss_url)
-#    # 抓取第一個文章標題
-#    title = rss['entries'][0]['title']
-#    # 抓取第一個文章標題
-#    link = rss.entries[0]['link']
 #    
 #    tmp = title + ' ' +link
     tmp = []
@@ -99,10 +104,13 @@ def getNews():
         tmp.append(entry['title'] + ' ' + entry['link'])
         if i > 3:
             break
+    #end if
     
-    return tmp
+    if (len(tmp)>0):
+        message =TextSendMessage("\n".join(tmp))
+        line_bot_api.push_message(userid, message)
 
-def getmomo_search(keyword):
+def getmomo_search_push(keyword,userid):
 
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
     print(target_url)
@@ -135,27 +143,51 @@ def getmomo_search(keyword):
     
     _html = etree.HTML(response.text)
     _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
-    _img_data = []
+    message = None
     
     if len(_imgs) > 1:   
-        for img in _imgs:
+        _msg_columns = []
+        for idx, img enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
                 _alt = _alt
             else:
                 _alt = match.group(1)
-            _img_data.append({
-                'image_url':img.attrib['src'],
-                'label':_alt,
-                'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
-            })
-        #end loop
+                
+           _msg_columns.append(CarouselColumn(
+                thumbnail_image_url=img.attrib['src'],
+#                title='',
+                text=_alt,
+                actions=[
+                    URITemplateAction(
+                        label='去逛逛',
+                        uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
+                    )
+                ]
+            ))
+                
+            if idx > 8:
+                break
+        #end for
 
-    #endif
-    return _img_data
+        message = TemplateSendMessage(
+            alt_text=text,
+            template=CarouselTemplate(
+                columns=_message_columns
+            )
+        ) 
 
-def getmomo_top30(category):
+    else:
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=152
+            ) 
+
+    #end if
+    line_bot_api.push_message(userid, message)
+
+def getmomo_top30_push(category,userid):
 
     target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category)
     print(target_url)
@@ -188,51 +220,49 @@ def getmomo_top30(category):
     
     html = etree.HTML(response.text)
     _imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
-    _img_data = []
-    
+    message = None
+
     if len(_imgs) > 1:   
-        for img in _imgs:
+        _msg_columns = []
+        for idx, img enumerate(_imgs, start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is None:
                 _alt = _alt
             else:
                 _alt = match.group(1)
-            _img_data.append({
-                'image_url':img.attrib['org'],
-                'label':_alt,
-                'uri':'https://m.momoshop.com.tw'+img.getparent().attrib['href']
-            })
-        #end loop
-
-    #endif
-    return _img_data
-
-def get_push_msg(img_data):
-
-    if (len(img_data) > 0):
-        _msg_columns = []
-        for idx, col in enumerate(img_data, start=0):
-            _msg_columns.append(CarouselColumn(
-                thumbnail_image_url=col['image_url'],
+                
+           _msg_columns.append(CarouselColumn(
+                thumbnail_image_url=img.attrib['org'],
 #                title='',
-                text=col['label'],
+                text=_alt,
                 actions=[
                     URITemplateAction(
                         label='去逛逛',
-                        uri=col['uri']
+                        uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
                     )
                 ]
             ))
                 
             if idx > 8:
                 break
-                        
-        #end for 
+        #end for
 
-        return _msg_columns;
+        message = TemplateSendMessage(
+            alt_text=text,
+            template=CarouselTemplate(
+                columns=_message_columns
+            )
+        ) 
+
+    else:
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=152
+            ) 
+
     #end if
-    return None
+    line_bot_api.push_message(userid, message)
 
 
 # 監聽所有來自 /callback 的 Post Request
@@ -271,12 +301,17 @@ def handle_text_message(event):
     if text == '我要買東西':
         is_buy = True
         message = TextSendMessage(text='貓喵買啥:')
+
     # 傳送影片
     elif text == '我要看新聞':
         is_buy = False
-        text_message = getNews()
-        print("\n\n".join(text_message))
-        message =TextSendMessage("\n\n".join(text_message))
+        executor.submit(get_news_push,uid)
+
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=31
+            )
+
     # 傳送貼圖
     elif text == '給我一個貼圖':
         is_buy = False
@@ -296,74 +331,45 @@ def handle_text_message(event):
                 sticker_id = sticker_id + 93
             if sticker_id > 179:
                 sticker_id = sticker_id + 313
-                
-#        sticker_id = '{}'.format(sticker_id)
+
         print('package_id: '+str(package_id))
         print('sticker_id:'+str(sticker_id))
         message = StickerSendMessage(
             package_id=package_id,
             sticker_id=sticker_id
         )
+
     elif text[0] == '買':
         text = text[1:]
         print('keyword={}'.format(text))
-        _data = getmomo_search(text)
-        _message_columns = get_push_msg(_data)
-        message = None
-        if _message_columns is None:
-#            message = TextSendMessage(text='沒賣 {}'.format(text))
-            message = StickerSendMessage(
-                    package_id=2,
-                    sticker_id=152
-                )
-        else:
-            message = TemplateSendMessage(
-                alt_text=text,
-                template=CarouselTemplate(
-                    columns=_message_columns
-                )
-            )           
+        executor.submit(getmomo_search_push,text,uid)
+
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=31
+            )
+          
     elif text == 'top30':
         print('keyword={}'.format(text))
-        _data = getmomo_top30(category_set[random.randint(0, len(category_set)-1)])
-        _message_columns = get_push_msg(_data)
-        message = None
-        if _message_columns is None:
-#            message = TextSendMessage(text='沒 {}'.format(text))
-            message = StickerSendMessage(
-                    package_id=1,
-                    sticker_id=420
-                )
-        else:
-            message = TemplateSendMessage(
-                alt_text=text,
-                template=CarouselTemplate(
-                    columns=_message_columns
-                )
-            ) 
+        executor.submit(getmomo_top30_push,category_set[random.randint(0, len(category_set)-1)],uid)
+
+        message = StickerSendMessage(
+                package_id=1,
+                sticker_id=119
+            )
+
     elif is_buy:
         print('keyword={}'.format(text))
-        _data = getmomo_search(text)
-        _message_columns = get_push_msg(_data)
-        message = None
-        if _message_columns is None:
-#            message = TextSendMessage(text='沒賣 {}'.format(text))
-            message = StickerSendMessage(
-                    package_id=2,
-                    sticker_id=39
-                )
-        else:
-            message = TemplateSendMessage(
-                alt_text=text,
-                template=CarouselTemplate(
-                    columns=_message_columns
-                )
-            )           
+        executor.submit(getmomo_search_push,text,uid)
+
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=22
+            )         
     else:
         response_message = text #chatbot.get_response(message)
         message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))
-        
-    print('is_buy:'+str(is_buy))
+
     line_bot_api.reply_message(event.reply_token,message)
 
 @handler.add(MessageEvent, message=StickerMessage)
