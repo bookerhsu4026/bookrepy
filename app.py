@@ -247,25 +247,33 @@ def getmomo_top30_push(category,userid):
 #                columns=_columns
 #            )
 #        )
+        print(type(_columns[0]))
         
         message = TemplateSendMessage(
-            alt_text='Buttons template',
-            template=ButtonsTemplate(
-                thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
-                title='Menu',
-                text='Please select',
-                actions=[
-                    MessageTemplateAction(
-                        label='發生地點',
-                        text='我要看發生地點'
+            alt_text='Carousel template',
+            template=CarouselTemplate(
+                columns=[
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
+                        title='新聞預警',
+                        text='新聞來源-蘋果新聞',
+                        actions=[
+                            URITemplateAction(
+                                label='Uri',
+                                uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
+                            )
+                        ]
                     ),
-                    MessageTemplateAction(
-                        label='文字雲週報',
-                        text='我要看文字雲週報'
-                    ),
-                    URITemplateAction(
-                        label='Uri',
-                        uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
+                    CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
+                        title='其他功能',
+                        text='這裡存放各種功能！',
+                        actions=[
+                            MessageTemplateAction(
+                                label='放鬆一下',
+                                text='給我一個貼圖'
+                            )
+                        ]
                     )
                 ]
             )
