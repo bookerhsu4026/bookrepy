@@ -82,6 +82,18 @@ category_set = ('1900000000',
         '4100000000',
         '3500000000')
 
+headers = {
+       'accept-encoding': 'gzip, deflate, br', 
+       'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7', 
+       'Cache-Control': 'no-cache',
+       'pragma': 'no-cache',
+       'Upgrade-Insecure-Requests': '1',
+       'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
+       'content-type': 'application/x-www-form-urlencoded',
+       'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+       'cookie':''
+       }
+
 executor = ThreadPoolExecutor(3)
 
 
@@ -111,17 +123,6 @@ def getmomo_search_push(keyword,userid):
     print('keyword:'+keyword)
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
     print(target_url)
-    headers = {
-           'accept-encoding': 'gzip, deflate, br', 
-           'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7', 
-           'Cache-Control': 'no-cache',
-           'pragma': 'no-cache',
-           'Upgrade-Insecure-Requests': '1',
-           'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
-           'content-type': 'application/x-www-form-urlencoded',
-           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'cookie':''
-           }
 
     # handle request body
     try:
@@ -129,14 +130,14 @@ def getmomo_search_push(keyword,userid):
         response = requests.get(url=target_url, headers=headers, timeout=5)
     except requests.exceptions.Timeout:
         # Maybe set up for a retry, or continue in a retry loop
-        return []
+        return
     except requests.exceptions.TooManyRedirects:
         # Tell the user their URL was bad and try a different one
-        return []
+        return
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
-        return []
+        return
     
     _html = etree.HTML(response.text)
     _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
@@ -182,38 +183,26 @@ def getmomo_top30_push(category,userid):
     print('uid: '+userid)
     print('category:'+category)
     target_url = 'https://m.momoshop.com.tw/category.momo?cn={}&top30=y&imgSH=fourCardStyle'.format(category)
-    print(target_url)
-    headers = {
-           'accept-encoding': 'gzip, deflate, br', 
-           'accept-language': 'zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7', 
-           'Cache-Control': 'no-cache',
-           'pragma': 'no-cache',
-           'Upgrade-Insecure-Requests': '1',
-           'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
-           'content-type': 'application/x-www-form-urlencoded',
-           'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
-           'cookie':''
-           }
-
+    
     # handle request body
     try:
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(url=target_url, headers=headers, timeout=5)
+        response = requests.get(url=target_url, headers=headers, timeout=15)
     except requests.exceptions.Timeout as tim:
         # Maybe set up for a retry, or continue in a retry loop
         print(tim)
-        return []
+        return
     except requests.exceptions.TooManyRedirects as man:
         # Tell the user their URL was bad and try a different one
         print(man)
-        return []
+        return
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
-        return []
+        return
     except requests.exceptions.HTTPError as err:
         print(err)
-        return []
+        return
     
     html = etree.HTML(response.text)
     _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
@@ -226,81 +215,36 @@ def getmomo_top30_push(category,userid):
             if match is not None:
                 _alt = match.group(1)
             #end if
+            print(img.attrib)
+            _image_url=img.attrib['org']
+            _image_url='https:'+_image_url if 'http' not in _image_url
             _colu = CarouselColumn(
-                thumbnail_image_url=img.attrib['src'],
+                thumbnail_image_url=img.attrib['org'],
     #                title='',
                 text=_alt,
                 actions=[
                     URITemplateAction(
-                        label='去逛逛',
+                        label='去看看',
                         uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
                     )
                 ]
             )
             _carouse_columns.append(_colu)
-
+    
         #end for
-
-#        message = TemplateSendMessage(
-#            alt_text='Carousel template',
-#            template=CarouselTemplate(
-#                columns=_carouse_columns
-#            )
-#        )
         
-        message = TemplateSendMessage(
-            alt_text='Carousel template',
-            template=CarouselTemplate(
-                columns=columns
-            )
-        )
-        
-        
-        print(type(_carouse_columns))
-        
-        caoclumn = CarouselColumn(
-                        thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
-                        title='其他功能',
-                        text='這裡存放各種功能！',
-                        actions=[
-                            MessageTemplateAction(
-                                label='更多新聞',
-                                text='我要看報紙'
-                            )
-                        ]
-                    )
-
-        caoclumn2 = CarouselColumn(
-                        thumbnail_image_url='https://i.imgur.com/B9ftEHJ.png',
-                        title='其他功能',
-                        text='這裡存放各種功能！',
-                        actions=[
-                            URITemplateAction(
-                                label='去逛逛',
-                                uri='https://m.momoshop.com.tw'
-                            )
-                        ]
-                    )
-
-        columns = []
-        columns.append(caoclumn)
-        columns.append(caoclumn2)
-        print(type(columns)) 
-        print(columns)
+        print(_carouse_columns)
        
         message = TemplateSendMessage(
-            alt_text='Carousel template',
+            alt_text='Momo Shopping',
             template=CarouselTemplate(
-                columns=columns
+                columns=_carouse_columns
             )
         )
-        
-        print('getmomo_top30_push:push_message')
-        line_bot_api.push_message(userid, message)
-        print('getmomo_top30_push:push_message end')
-    #end if
-    print('getmomo_top30_push:end')
 
+        line_bot_api.push_message(userid, message)
+    #end if
+    print('getmomo_top30_push: end')
 
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
