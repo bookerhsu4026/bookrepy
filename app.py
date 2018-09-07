@@ -226,9 +226,8 @@ def getmomo_top30_push(category,userid):
             match = re.search(r'【.+】(.+)', _alt)
             if match is not None:
                 _alt = match.group(1)
-            
             #end if
-
+            print('_alt:{}'.format(_alt))
             _colu = CarouselColumn(
                 thumbnail_image_url=img.attrib['src'],
     #                title='',
@@ -243,6 +242,7 @@ def getmomo_top30_push(category,userid):
             _columns.append(_colu)
 
         #end for
+        print(_columns)
 
         message = TemplateSendMessage(
             alt_text='Carousel template',
