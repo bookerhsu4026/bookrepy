@@ -224,7 +224,7 @@ def getmomo_top30_push(category,userid):
                 actions=[
                     URITemplateAction(
                         label='去看看',
-                        uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
+                        uri=('https://m.momoshop.com.tw'+img.getparent().attrib['href']) if 'http' not in img.getparent().attrib['href'] else img.getparent().attrib['href']
                     )
                 ]
             )
@@ -232,10 +232,10 @@ def getmomo_top30_push(category,userid):
     
         #end for
         
-        print(_carouse_columns)
+#        print(_carouse_columns)
        
         message = TemplateSendMessage(
-            alt_text='Momo Shopping',
+            alt_text='Momo TOP30',
             template=CarouselTemplate(
                 columns=_carouse_columns
             )
