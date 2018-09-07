@@ -218,7 +218,6 @@ def getmomo_top30_push(category,userid):
     html = etree.HTML(response.text)
     _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
     message = None
-    print('len:{}'.format(len(_imgs)))
     if len(_imgs) > 0:   
         _columns = []
         for idx, img in enumerate(_imgs[:8], start=0):
@@ -227,7 +226,6 @@ def getmomo_top30_push(category,userid):
             if match is not None:
                 _alt = match.group(1)
             #end if
-            print('_alt:{}'.format(_alt))
             _colu = CarouselColumn(
                 thumbnail_image_url=img.attrib['src'],
     #                title='',
@@ -250,7 +248,7 @@ def getmomo_top30_push(category,userid):
                 columns=_columns
             )
         )
-        
+        print('getmomo_top30_push:push_message')
         line_bot_api.push_message(userid, message)
     #end if
     print('getmomo_top30_push:end')
