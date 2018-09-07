@@ -139,7 +139,7 @@ def getmomo_search_push(keyword,userid):
         return []
     
     _html = etree.HTML(response.text)
-    _imgs = _html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
+    _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
     message = None
     
     if len(_imgs) > 0:   
@@ -216,7 +216,7 @@ def getmomo_top30_push(category,userid):
         return []
     
     html = etree.HTML(response.text)
-    _imgs = html.xpath('//article[contains(@class, "prdListArea")]//li/a[not(@class="trackbtn")]/img[position()<3]')
+    _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
     message = None
 
     if len(_imgs) > 0:   
