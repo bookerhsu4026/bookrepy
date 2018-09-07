@@ -218,7 +218,7 @@ def getmomo_top30_push(category,userid):
     html = etree.HTML(response.text)
     _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
     message = None
-
+    print('len:{}'.format(len(_imgs)))
     if len(_imgs) > 0:   
         _columns = []
         for idx, img in enumerate(_imgs[:8], start=0):
