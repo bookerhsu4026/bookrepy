@@ -267,7 +267,13 @@ def getmomo_top30_push(category,userid):
                     )
         
         columns = [caoclumn]
-        
+        print(type(columns))
+        print(columns)
+        columns = []
+        columns.append(caoclumn)
+        print(type(columns)) 
+        print(columns)
+       
         message = TemplateSendMessage(
             alt_text='Carousel template',
             template=CarouselTemplate(
