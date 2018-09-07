@@ -96,10 +96,8 @@ def get_news_push(userid):
 #    
 #    tmp = title + ' ' +link
     tmp = []
-    for i, entry in enumerate(rss.entries, start=0):
+    for i, entry in enumerate(rss.entries[:3], start=0):
         tmp.append(entry['title'] + ' ' + entry['link'])
-        if i > 3:
-            break
     #end if
     
     if (len(tmp)>0):
@@ -129,15 +127,20 @@ def getmomo_search_push(keyword,userid):
     try:
         requests.packages.urllib3.disable_warnings()
         response = requests.get(url=target_url, headers=headers, timeout=5)
-    except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout as tim:
         # Maybe set up for a retry, or continue in a retry loop
+        print(tim)
         return []
-    except requests.exceptions.TooManyRedirects:
+    except requests.exceptions.TooManyRedirects as man:
         # Tell the user their URL was bad and try a different one
+        print(man)
         return []
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
+        return []
+    except requests.exceptions.HTTPError as err:
+        print(err)
         return []
     
     _html = etree.HTML(response.text)
@@ -146,7 +149,7 @@ def getmomo_search_push(keyword,userid):
     
     if len(_imgs) > 0:   
         _columns = []
-        for idx, img in enumerate(_imgs, start=0):
+        for idx, img in enumerate(_imgs[:8], start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is not None:
@@ -166,9 +169,7 @@ def getmomo_search_push(keyword,userid):
                 ]
             )
             _columns.append(_colu)
-                
-            if idx > 8:
-                break
+
         #end for
 
         message = TemplateSendMessage(
@@ -203,15 +204,20 @@ def getmomo_top30_push(category,userid):
     try:
         requests.packages.urllib3.disable_warnings()
         response = requests.get(url=target_url, headers=headers, timeout=5)
-    except requests.exceptions.Timeout:
+    except requests.exceptions.Timeout as tim:
         # Maybe set up for a retry, or continue in a retry loop
+        print(tim)
         return []
-    except requests.exceptions.TooManyRedirects:
+    except requests.exceptions.TooManyRedirects as man:
         # Tell the user their URL was bad and try a different one
+        print(man)
         return []
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
+        return []
+    except requests.exceptions.HTTPError as err:
+        print(err)
         return []
     
     html = etree.HTML(response.text)
@@ -220,7 +226,7 @@ def getmomo_top30_push(category,userid):
 
     if len(_imgs) > 0:   
         _columns = []
-        for idx, img in enumerate(_imgs, start=0):
+        for idx, img in enumerate(_imgs[:8], start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is not None:
@@ -240,9 +246,7 @@ def getmomo_top30_push(category,userid):
                 ]
             )
             _columns.append(_colu)
-                
-            if idx > 8:
-                break
+
         #end for
 
         message = TemplateSendMessage(
