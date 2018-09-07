@@ -120,23 +120,28 @@ def get_news_push(userid):
 
 def getmomo_search_push(keyword,userid):
     print('uid: '+userid)
-    print('keyword:'+keyword)
+    print('keyword:'+keyword)           
     target_url = 'https://m.momoshop.com.tw/search.momo?searchKeyword={}&couponSeq=&searchType=1&cateLevel=-1&ent=k&_imgSH=fourCardStyle'.format(keyword)
     print(target_url)
-
+    
     # handle request body
     try:
         requests.packages.urllib3.disable_warnings()
-        response = requests.get(url=target_url, headers=headers, timeout=5)
-    except requests.exceptions.Timeout:
+        response = requests.get(url=target_url, headers=headers, timeout=15)
+    except requests.exceptions.Timeout as tim:
         # Maybe set up for a retry, or continue in a retry loop
+        print(tim)
         return
-    except requests.exceptions.TooManyRedirects:
+    except requests.exceptions.TooManyRedirects as man:
         # Tell the user their URL was bad and try a different one
+        print(man)
         return
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
+        return
+    except requests.exceptions.HTTPError as err:
+        print(err)
         return
     
     _html = etree.HTML(response.text)
@@ -146,35 +151,36 @@ def getmomo_search_push(keyword,userid):
     if len(_imgs) > 0:   
         _columns = []
         for idx, img in enumerate(_imgs[:8], start=0):
-            _alt = img.attrib['alt']
-            match = re.search(r'【.+】(.+)', _alt)
+            _title = img.attrib['title']
+            match = re.search(r'【.+】(.+)', _title)
             if match is not None:
-                _alt = match.group(1)
-            
+                _title = match.group(1)
             #end if
-
-            _colu = CarouselColumn(
-                thumbnail_image_url=img.attrib['org'],
-    #                title='',
-                text=_alt,
-                actions=[
-                    URITemplateAction(
-                        label='去逛逛',
-                        uri='https://m.momoshop.com.tw'+img.getparent().attrib['href']
-                    )
-                ]
+    
+            _columns.append(CarouselColumn(
+                    thumbnail_image_url=('https:'+img.attrib['src']) if 'http' not in img.attrib['src'] else img.attrib['src'],
+        #                title='',
+                    text=_title,
+                    actions=[
+                        URITemplateAction(
+                            label='去逛逛',
+                            uri=('https://m.momoshop.com.tw'+img.getparent().attrib['href']) if 'http' not in img.getparent().attrib['href'] else img.getparent().attrib['href']
+                        )
+                    ]
+                )
             )
-            _columns.append(_colu)
-
+    
         #end for
-
+        
+        print(_columns)
+    
         message = TemplateSendMessage(
             alt_text='Carousel template',
             template=CarouselTemplate(
                 columns=_columns
             )
         )
-
+    
         line_bot_api.push_message(userid, message)
     #end if
     print('getmomo_search_push:end')
@@ -216,9 +222,9 @@ def getmomo_top30_push(category,userid):
                 _alt = match.group(1)
             #end if
             print(img.attrib)
-            _image_url=('https:'+img.attrib['org']) if 'http' not in img.attrib['org'] else img.attrib['org']
+
             _colu = CarouselColumn(
-                thumbnail_image_url=_image_url,
+                thumbnail_image_url=('https:'+img.attrib['org']) if 'http' not in img.attrib['org'] else img.attrib['org'],
     #                title='',
                 text=_alt,
                 actions=[
