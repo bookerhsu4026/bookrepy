@@ -254,8 +254,8 @@ def getmomo_top30_push(category,userid):
         
         print(type(_carouse_template))
         
-        columns = [
-                    CarouselColumn(
+        cclumns = [
+                CarouselColumn(
                         thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
                         title='其他功能',
                         text='這裡存放各種功能！',
@@ -267,6 +267,9 @@ def getmomo_top30_push(category,userid):
                         ]
                     )
                 ]
+        
+        columns = []
+        columns.append(cclumns)
         
         message = TemplateSendMessage(
             alt_text='Carousel template',
