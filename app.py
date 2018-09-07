@@ -216,10 +216,9 @@ def getmomo_top30_push(category,userid):
                 _alt = match.group(1)
             #end if
             print(img.attrib)
-            _image_url=img.attrib['org']
-            _image_url='https:'+_image_url if 'http' not in _image_url
+            _image_url=('https:'+img.attrib['org']) if 'http' not in img.attrib['org'] else img.attrib['org']
             _colu = CarouselColumn(
-                thumbnail_image_url=img.attrib['org'],
+                thumbnail_image_url=_image_url,
     #                title='',
                 text=_alt,
                 actions=[
