@@ -240,7 +240,6 @@ def getmomo_top30_push(category,userid):
             _columns.append(_colu)
 
         #end for
-        print(_columns)
 
         message = TemplateSendMessage(
             alt_text='Carousel template',
@@ -250,6 +249,7 @@ def getmomo_top30_push(category,userid):
         )
         print('getmomo_top30_push:push_message')
         line_bot_api.push_message(userid, message)
+        print('getmomo_top30_push:push_message end')
     #end if
     print('getmomo_top30_push:end')
 
