@@ -248,6 +248,14 @@ def getmomo_top30_push(category,userid):
 #            )
 #        )
         
+        message = TemplateSendMessage(
+            alt_text='Carousel template',
+            template=CarouselTemplate(
+                columns=columns
+            )
+        )
+        
+        
         print(type(_carouse_columns))
         
         caoclumn = CarouselColumn(
@@ -267,9 +275,9 @@ def getmomo_top30_push(category,userid):
                         title='其他功能',
                         text='這裡存放各種功能！',
                         actions=[
-                            MessageTemplateAction(
-                                label='放鬆一下',
-                                text='給我一個貼圖'
+                            URITemplateAction(
+                                label='去逛逛',
+                                uri='https://m.momoshop.com.tw'
                             )
                         ]
                     )
