@@ -219,7 +219,7 @@ def getmomo_top30_push(category,userid):
     _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
     message = None
     if len(_imgs) > 0:   
-        _columns = []
+        _carouse_columns = []
         for idx, img in enumerate(_imgs[:8], start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
@@ -237,33 +237,24 @@ def getmomo_top30_push(category,userid):
                     )
                 ]
             )
-            _columns.append(_colu)
+            _carouse_columns.append(_colu)
 
         #end for
 
 #        message = TemplateSendMessage(
 #            alt_text='Carousel template',
 #            template=CarouselTemplate(
-#                columns=_columns
+#                columns=_carouse_columns
 #            )
 #        )
-        print(type(_columns[0]))
         
-        message = TemplateSendMessage(
-            alt_text='Carousel template',
-            template=CarouselTemplate(
-                columns=[
-                    CarouselColumn(
-                        thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
-                        title='新聞預警',
-                        text='新聞來源-蘋果新聞',
-                        actions=[
-                            URITemplateAction(
-                                label='Uri',
-                                uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
-                            )
-                        ]
-                    ),
+        _carouse_template = CarouselTemplate(
+                columns=_carouse_columns
+            )
+        
+        print(type(_carouse_template))
+        
+        columns = [
                     CarouselColumn(
                         thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
                         title='其他功能',
@@ -276,6 +267,11 @@ def getmomo_top30_push(category,userid):
                         ]
                     )
                 ]
+        
+        message = TemplateSendMessage(
+            alt_text='Carousel template',
+            template=CarouselTemplate(
+                columns=columns
             )
         )
         
