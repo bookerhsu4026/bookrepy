@@ -22,7 +22,7 @@ from linebot.models import (
     TemplateSendMessage, ConfirmTemplate, MessageAction,
     ButtonsTemplate, ImageCarouselTemplate, ImageCarouselColumn, URIAction,
     PostbackAction, DatetimePickerAction,
-    URITemplateAction,
+    URITemplateAction, MessageTemplateAction,
     CameraAction, CameraRollAction, LocationAction,
     CarouselTemplate, CarouselColumn, PostbackEvent,
     StickerMessage, StickerSendMessage, LocationMessage, LocationSendMessage,
@@ -241,12 +241,36 @@ def getmomo_top30_push(category,userid):
 
         #end for
 
+#        message = TemplateSendMessage(
+#            alt_text='Carousel template',
+#            template=CarouselTemplate(
+#                columns=_columns
+#            )
+#        )
+        
         message = TemplateSendMessage(
-            alt_text='Carousel template',
-            template=CarouselTemplate(
-                columns=_columns
+            alt_text='Buttons template',
+            template=ButtonsTemplate(
+                thumbnail_image_url='https://i.imgur.com/vkqbLnz.png',
+                title='Menu',
+                text='Please select',
+                actions=[
+                    MessageTemplateAction(
+                        label='發生地點',
+                        text='我要看發生地點'
+                    ),
+                    MessageTemplateAction(
+                        label='文字雲週報',
+                        text='我要看文字雲週報'
+                    ),
+                    URITemplateAction(
+                        label='Uri',
+                        uri='https://tw.appledaily.com/local/realtime/20180817/1412804'
+                    )
+                ]
             )
         )
+        
         print('getmomo_top30_push:push_message')
         line_bot_api.push_message(userid, message)
         print('getmomo_top30_push:push_message end')
