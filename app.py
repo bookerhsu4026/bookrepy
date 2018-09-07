@@ -127,24 +127,19 @@ def getmomo_search_push(keyword,userid):
     try:
         requests.packages.urllib3.disable_warnings()
         response = requests.get(url=target_url, headers=headers, timeout=5)
-    except requests.exceptions.Timeout as tim:
+    except requests.exceptions.Timeout:
         # Maybe set up for a retry, or continue in a retry loop
-        print(tim)
         return []
-    except requests.exceptions.TooManyRedirects as man:
+    except requests.exceptions.TooManyRedirects:
         # Tell the user their URL was bad and try a different one
-        print(man)
         return []
     except requests.exceptions.RequestException as e:
         # catastrophic error. bail.
         print(e)
         return []
-    except requests.exceptions.HTTPError as err:
-        print(err)
-        return []
     
     _html = etree.HTML(response.text)
-    _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
+    _imgs = _html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
     message = None
     
     if len(_imgs) > 0:   
