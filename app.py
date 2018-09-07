@@ -248,14 +248,22 @@ def getmomo_top30_push(category,userid):
 #            )
 #        )
         
-        _carouse_template = CarouselTemplate(
-                columns=_carouse_columns
-            )
-        
-        print(type(_carouse_template))
+        print(type(_carouse_columns))
         
         caoclumn = CarouselColumn(
                         thumbnail_image_url='https://i.imgur.com/Dt97YFG.png',
+                        title='其他功能',
+                        text='這裡存放各種功能！',
+                        actions=[
+                            MessageTemplateAction(
+                                label='更多新聞',
+                                text='我要看報紙'
+                            )
+                        ]
+                    )
+
+        caoclumn2 = CarouselColumn(
+                        thumbnail_image_url='https://i.imgur.com/B9ftEHJ.png',
                         title='其他功能',
                         text='這裡存放各種功能！',
                         actions=[
@@ -265,12 +273,10 @@ def getmomo_top30_push(category,userid):
                             )
                         ]
                     )
-        
-        columns = [caoclumn]
-        print(type(columns))
-        print(columns)
+
         columns = []
         columns.append(caoclumn)
+        columns.append(caoclumn2)
         print(type(columns)) 
         print(columns)
        
