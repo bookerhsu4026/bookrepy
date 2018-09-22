@@ -374,7 +374,7 @@ def handle_text_message(event):
                 sticker_id=119
             )
 
-     elif u'天氣' in text:
+     elif text.find(u'天氣') > -1:
         print('keyword={}'.format(text))
         re_weather = re.compile(r"(\w+)天氣")
         city = re.match(re_weather,text)
