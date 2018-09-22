@@ -137,15 +137,16 @@ def get_current_weather(city,userid):
     for location in tree.findall('.//{urn:cwb:gov:tw:cwbcommon:0.1}location'):
         if city in location[0].text:
             # If the city is found, access its child direct.
-            message = '%s目前的天氣為%s。\n' \
+            message = TextSendMessage(text='%s目前的天氣為%s。\n' \
                    '溫度為 %s 至 %s ℃，降雨機率為 %s %%。' \
                    % (location[0].text, location[1][1][2][0].text,
                       location[3][1][2][0].text, location[2][1][2][0].text,
-                      location[5][1][2][0].text)
+                      location[5][1][2][0].text))
             
             line_bot_api.push_message(userid, message)
+            return        
 
-    message = '很抱歉，無法提供您{}的天氣。'.format(city)
+    message = TextSendMessage(text='很抱歉，無法提供您{}的天氣。'.format(city))
     line_bot_api.push_message(userid, message)
 
 def getmomo_search_push(keyword,userid):
@@ -374,11 +375,11 @@ def handle_text_message(event):
                 sticker_id=119
             )
 
-    elif text.find(u'天氣') > -1:
+    elif u'天氣' in text:
         print('keyword={}'.format(text))
         re_weather = re.compile(r"(\w+)天氣")
         city = re.match(re_weather,text)
-        executor.submit(get_current_weather,city.group(1),uid)
+        executor.submit(get_current_weather,re.sub(r"台", "臺", city.group(1)),uid)
 
         message = StickerSendMessage(
                 package_id=2,
