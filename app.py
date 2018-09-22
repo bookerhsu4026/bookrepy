@@ -111,7 +111,7 @@ def get_news_push(userid):
 #    
 #    tmp = title + ' ' +link
     tmp = []
-    for i, entry in enumerate(rss.entries[:3], start=0):
+    for i, entry in enumerate(rss.entries[:5], start=0):
         tmp.append(entry['title'] + ' ' + entry['link'])
     #end if
     
