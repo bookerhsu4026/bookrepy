@@ -5,7 +5,8 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests, re, feedparser, random, time
+import requests, re, feedparser, random
+import schedule, time
 from lxml import etree
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
@@ -462,4 +463,7 @@ def handle_leave():
 
 
 if __name__ == '__main__':
+    schedule.clear()
+    second_5_j = schedule.every().day.at("9:30").do(get_news_push, 'Ube6a1a56c1466ec56cee2ae59ca0b17b')
     app.run(debug=True)
+    schedule.cancel_job(second_5_j)
