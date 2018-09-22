@@ -6,7 +6,7 @@ Created on Sat Aug 18 01:00:17 2018
 """
 
 import requests, re, feedparser, random
-import schedule, time
+import schedule, time, urllib
 from lxml import etree
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
@@ -95,6 +95,8 @@ headers = {
        'cookie':''
        }
 
+CWB_AUTHED_KEY = 'CWB-2D440B6F-B34D-4763-A117-B7763E4B84F2'
+
 executor = ThreadPoolExecutor(3)
 
 
@@ -118,6 +120,33 @@ def get_news_push(userid):
         line_bot_api.push_message(userid, message)
     #end if
     print('get_news_push: end')
+
+def get_current_weather(city,userid):
+    """
+    Get current weather in specific city.
+
+    Args:
+        city: City Name
+
+    Returns:
+        Current weather string
+    """
+    response = urllib.request.urlopen('http://opendata.cwb.gov.tw/opendataapi?dataid=F-C0032-001&authorizationkey={}'.format(CWB_AUTHED_KEY))
+    tree = etree.parse(response).getroot()
+
+    for location in tree.findall('.//{urn:cwb:gov:tw:cwbcommon:0.1}location'):
+        if city in location[0].text:
+            # If the city is found, access its child direct.
+            message = '%s目前的天氣為%s。\n' \
+                   '溫度為 %s 至 %s ℃，降雨機率為 %s %%。' \
+                   % (location[0].text, location[1][1][2][0].text,
+                      location[3][1][2][0].text, location[2][1][2][0].text,
+                      location[5][1][2][0].text)
+            
+            line_bot_api.push_message(userid, message)
+
+    message = '很抱歉，無法提供您{}的天氣。'.format(city)
+    line_bot_api.push_message(userid, message)
 
 def getmomo_search_push(keyword,userid):
     print('uid: '+userid)
@@ -345,6 +374,16 @@ def handle_text_message(event):
                 sticker_id=119
             )
 
+     elif u'天氣' in text:
+        print('keyword={}'.format(text))
+        re_weather = re.compile(r"(\w+)天氣")
+        city = re.match(re_weather,text)
+        executor.submit(get_current_weather,city.group(1),uid)
+
+        message = StickerSendMessage(
+                package_id=2,
+                sticker_id=25
+            )     
     elif is_buy:
         print('keyword={}'.format(text))
         executor.submit(getmomo_search_push,text,uid)
@@ -352,7 +391,7 @@ def handle_text_message(event):
         message = StickerSendMessage(
                 package_id=2,
                 sticker_id=22
-            )         
+            ) 
     else:
         response_message = text #chatbot.get_response(message)
         message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))

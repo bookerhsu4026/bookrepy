@@ -4,3 +4,4 @@ line-bot-sdk
 lxml
 feedparser
 schedule
+urllib
