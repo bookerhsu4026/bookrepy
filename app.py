@@ -379,7 +379,7 @@ def handle_text_message(event):
         print('keyword={}'.format(text))
         re_weather = re.compile(r"(\w+)天氣")
         city = re.match(re_weather,text)
-        executor.submit(get_current_weather,re.sub(r"台", "臺", city.group(1)),uid)
+        executor.submit(get_current_weather,sub(r"(縣|市)", "", re.sub(r"台", "臺", city.group(1))),uid)
 
         message = StickerSendMessage(
                 package_id=2,
