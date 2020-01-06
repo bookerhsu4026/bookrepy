@@ -285,11 +285,10 @@ def getmomo_top30_push(category,userid):
     print('getmomo_top30_push: end')
 
 def get_stock_info(stock_id,userid):
-    print('uid: '+userid)
-    print('stock_id:'+stock_id)
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                              'AppleWebKit/537.36 (KHTML, like Gecko) '
                              'Chrome/66.0.3359.181 Safari/537.36'}
+    print(G_FINANCE_URL + 'TPE:' + stock_id)
     resp = requests.get(G_FINANCE_URL + 'TPE:' + stock_id, headers=headers)
     if resp.status_code != 200:
         print('Invalid url:', resp.url)
