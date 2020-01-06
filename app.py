@@ -7,6 +7,7 @@ Created on Sat Aug 18 01:00:17 2018
 
 import requests, re, feedparser, random
 import urllib
+from bs4 import BeautifulSoup
 from lxml import etree
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
@@ -96,6 +97,7 @@ headers = {
        }
 
 CWB_AUTHED_KEY = 'CWB-2D440B6F-B34D-4763-A117-B7763E4B84F2'
+G_FINANCE_URL = 'https://www.google.com/search?q='
 
 executor = ThreadPoolExecutor(3)
 
@@ -282,6 +284,41 @@ def getmomo_top30_push(category,userid):
     #end if
     print('getmomo_top30_push: end')
 
+def get_stock_info(stock_id,userid):
+
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                             'AppleWebKit/537.36 (KHTML, like Gecko) '
+                             'Chrome/66.0.3359.181 Safari/537.36'}
+    resp = requests.get(G_FINANCE_URL + stock_id, headers=headers)
+    if resp.status_code != 200:
+        print('Invalid url:', resp.url)
+        return None
+
+    soup = BeautifulSoup(resp.text, 'html5lib')
+    stock = dict()
+
+    sections = soup.find_all('g-card-section')
+
+    # 第 2 個 g-card-section, 取出公司名及即時股價資訊
+    stock['name'] = sections[1].div.text
+    spans = sections[1].find_all('div', recursive=False)[1].find_all('span', recursive=False)
+    stock['current_price'] = spans[0].text
+    stock['current_change'] = spans[1].text
+
+    # 第 4 個 g-card-section, 有左右兩個 table 分別存放股票資訊
+    for table in sections[3].find_all('table'):
+        for tr in table.find_all('tr')[:3]:
+            key = tr.find_all('td')[0].text.lower().strip()
+            value = tr.find_all('td')[1].text.strip()
+            stock[key] = value
+
+    for k, v in stock.items():
+        print(k, v)
+
+    message =TextSendMessage("\n".join([k + ' ' + v for k, v in stock.items()]))
+    line_bot_api.push_message(userid, message)
+    print('get_stock_info: end')
+
 # 監聽所有來自 /callback 的 Post Request
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -392,6 +429,14 @@ def handle_text_message(event):
                 package_id=2,
                 sticker_id=22
             ) 
+    elif text.isnumeric():
+        print('stock_id={}'.format(text))
+        executor.submit(get_stock_info,text,uid)
+
+        message = StickerSendMessage(
+                package_id=1,
+                sticker_id=120
+            )
     else:
         response_message = text #chatbot.get_response(message)
         message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))
