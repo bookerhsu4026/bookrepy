@@ -6,7 +6,7 @@ Created on Sat Aug 18 01:00:17 2018
 """
 
 import requests, re, feedparser, random
-import schedule, time, urllib
+import urllib
 from lxml import etree
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
@@ -319,8 +319,7 @@ def handle_text_message(event):
         is_buy = True
         message = TextSendMessage(text='貓喵買啥:')
 
-    # 傳送影片
-    elif text == '我要看新聞':
+    elif text == '新聞':
         is_buy = False
         executor.submit(get_news_push,uid)
 
@@ -330,7 +329,7 @@ def handle_text_message(event):
             )
 
     # 傳送貼圖
-    elif text == '給我一個貼圖':
+    elif text == '貼圖':
         is_buy = False
         package_id = random.randint(1, 2)
         sticker_id = 1
@@ -366,7 +365,7 @@ def handle_text_message(event):
                 sticker_id=31
             )
           
-    elif text == 'top30':
+    elif text.lower() == 'top30':
         print('keyword={}'.format(text))
         executor.submit(getmomo_top30_push,category_set[random.randint(0, len(category_set)-1)],uid)
 
@@ -430,41 +429,9 @@ def handle_content_message(event):
     else:
         return
 
-#    message_content = line_bot_api.get_message_content(event.message.id)
-#    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix=ext + '-', delete=False) as tf:
-#        for chunk in message_content.iter_content():
-#            tf.write(chunk)
-#        tempfile_path = tf.name
-#
-#    dist_path = tempfile_path + '.' + ext
-#    dist_name = os.path.basename(dist_path)
-#    os.rename(tempfile_path, dist_path)
-#
-#    line_bot_api.reply_message(
-#        event.reply_token, [
-#            TextSendMessage(text='Save content.'),
-#            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
-#        ])
-
-
 @handler.add(MessageEvent, message=FileMessage)
 def handle_file_message(event):
     mm = None
-#    message_content = line_bot_api.get_message_content(event.message.id)
-#    with tempfile.NamedTemporaryFile(dir=static_tmp_path, prefix='file-', delete=False) as tf:
-#        for chunk in message_content.iter_content():
-#            tf.write(chunk)
-#        tempfile_path = tf.name
-#
-#    dist_path = tempfile_path + '-' + event.message.file_name
-#    dist_name = os.path.basename(dist_path)
-#    os.rename(tempfile_path, dist_path)
-#
-#    line_bot_api.reply_message(
-#        event.reply_token, [
-#            TextSendMessage(text='Save file.'),
-#            TextSendMessage(text=request.host_url + os.path.join('static', 'tmp', dist_name))
-#        ])
 
 @handler.add(FollowEvent)
 def handle_follow(event):
@@ -503,7 +470,4 @@ def handle_leave():
 
 
 if __name__ == '__main__':
-    schedule.clear()
-    second_5_j = schedule.every().day.at("9:30").do(get_news_push, 'Ube6a1a56c1466ec56cee2ae59ca0b17b')
     app.run(debug=True)
-    schedule.cancel_job(second_5_j)
