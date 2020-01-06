@@ -431,7 +431,7 @@ def handle_text_message(event):
             ) 
     elif text.isnumeric():
         print('stock_id={}'.format(text))
-        #executor.submit(get_stock_info,text,uid)
+        executor.submit(get_stock_info,text,uid)
 
         message = StickerSendMessage(
                 package_id=1,
