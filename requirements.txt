@@ -2,4 +2,4 @@ gunicorn
 Flask
 line-bot-sdk
 requests
-BeautifulSoup
+beautifulsoup4
