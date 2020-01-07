@@ -293,12 +293,12 @@ def get_stock_info(stock_id,userid):
     if resp.status_code != 200:
         print('Invalid url:', resp.url)
         return None
-    print(resp.text)
+ 
     soup = BeautifulSoup(resp.text, 'html5lib')
     stock = dict()
     print(soup)
     sections = soup.find_all('g-card-section')
-
+    print(sections)
     # 第 2 個 g-card-section, 取出公司名及即時股價資訊
     stock['name'] = sections[1].div.text
     spans = sections[1].find_all('div', recursive=False)[1].find_all('span', recursive=False)
