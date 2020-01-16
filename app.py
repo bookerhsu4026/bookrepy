@@ -252,7 +252,7 @@ def getmomo_top30_push(category,userid):
             if match is not None:
                 _alt = match.group(1)
             #end if
-            print(img.attrib)
+#            print(img.attrib)
 
             _colu = CarouselColumn(
                 thumbnail_image_url=('https:'+img.attrib['org']) if 'http' not in img.attrib['org'] else img.attrib['org'],
@@ -269,7 +269,7 @@ def getmomo_top30_push(category,userid):
     
         #end for
         
-#        print(_carouse_columns)
+        print(_carouse_columns)
        
         message = TemplateSendMessage(
             alt_text='Momo TOP30',
