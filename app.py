@@ -7,7 +7,6 @@ Created on Sat Aug 18 01:00:17 2018
 
 import requests, re, feedparser, random
 import urllib
-from bs4 import BeautifulSoup
 from lxml import etree
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
@@ -92,12 +91,11 @@ headers = {
        'Upgrade-Insecure-Requests': '1',
        'user-agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36',
        'content-type': 'application/x-www-form-urlencoded',
-       'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+       'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
        'cookie':''
        }
 
 CWB_AUTHED_KEY = 'CWB-2D440B6F-B34D-4763-A117-B7763E4B84F2'
-G_FINANCE_URL = 'https://www.google.com/search?q='
 
 executor = ThreadPoolExecutor(3)
 
@@ -244,7 +242,7 @@ def getmomo_top30_push(category,userid):
         return
     
     html = etree.HTML(response.text)
-    _imgs = html.xpath('//div[@class="content"]//li/a[not(@class="trackbtn")]/img')
+    _imgs = html.xpath('//article[@class="prdListArea"]//li//img[@class="goodsImg"]')
     message = None
     if len(_imgs) > 0:   
         _carouse_columns = []
