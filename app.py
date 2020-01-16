@@ -174,7 +174,7 @@ def getmomo_search_push(keyword,userid):
     except requests.exceptions.HTTPError as err:
         print(err)
         return
-    print(response.text)    
+  
     _html = etree.HTML(response.text)
     _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
     message = None
@@ -240,7 +240,7 @@ def getmomo_top30_push(category,userid):
     except requests.exceptions.HTTPError as err:
         print(err)
         return
-    
+    print(response.text)      
     html = etree.HTML(response.text)
     _imgs = html.xpath('//article[@class="prdListArea"]//li//img[@class="goodsImg"]')
     message = None
