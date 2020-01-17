@@ -313,7 +313,10 @@ def handle_text_message(event):
     print(text)
 
     # 買東西
-    if text == '新聞' or text.lower() == 'news':
+    if text == '幫助' or text.lower() == 'help':
+        response_message = '1.help\n2.找東西\n3.top30\n4.[台北..]天氣\n5.news\n'
+        message = TextSendMessage(text='貓喵@:{}'.format(response_message))
+    elif text == '新聞' or text.lower() == 'news':
         executor.submit(get_news_push,uid)
 
         message = StickerSendMessage(
@@ -347,14 +350,14 @@ def handle_text_message(event):
             sticker_id=sticker_id
         )
 
-    elif text[0] == u'買' or text[0] == u'找':
+    elif text[0] == '找':
         text = text[1:]
         print('keyword={}'.format(text))
         executor.submit(getmomo_search_push,text,uid)
 
         message = StickerSendMessage(
-                package_id=2,
-                sticker_id=31
+                package_id=11537,
+                sticker_id=52002770
             )
           
     elif text.lower() == 'top30':
