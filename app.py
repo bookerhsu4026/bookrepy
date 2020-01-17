@@ -322,7 +322,7 @@ def handle_text_message(event):
         is_buy = True
         message = TextSendMessage(text='貓喵買啥:')
 
-    elif text == '新聞':
+    elif text == '新聞' || text.lower() == 'news':
         is_buy = False
         executor.submit(get_news_push,uid)
 
@@ -332,7 +332,7 @@ def handle_text_message(event):
             )
 
     # 傳送貼圖
-    elif text == '貼圖':
+    elif text == '貼圖' || text.lower() == 'pic':
         is_buy = False
         package_id = random.randint(1, 2)
         sticker_id = 1
