@@ -5,7 +5,7 @@ Created on Sat Aug 18 01:00:17 2018
 @author: linzino
 """
 
-import requests, re, feedparser, random
+import requests, re, feedparser, random, time
 import urllib
 from lxml import etree
 from flask import Flask, request, abort
@@ -404,6 +404,7 @@ def handle_text_message(event):
         response_message = text #chatbot.get_response(message)
         message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))
 
+    time.sleep(1)
     line_bot_api.reply_message(event.reply_token,message)
 
 @handler.add(MessageEvent, message=StickerMessage)
