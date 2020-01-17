@@ -176,7 +176,7 @@ def getmomo_search_push(keyword,userid):
         return
   
     _html = etree.HTML(response.text)
-    _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//li[@class="goodsItemLi"]/a[not(@class="trackbtn")]/img[position()<3]')
+    _imgs = _imgs = _html.xpath('//article[contains(@class, "prdListArea")]//div/img')
     message = None
     
     if len(_imgs) > 0:   
