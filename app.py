@@ -265,6 +265,9 @@ def getmomo_top30_push(category,userid):
                     )
                 ]
             )
+                
+            print(img.attrib.org)
+                
             _carouse_columns.append(_colu)
     
         #end for
