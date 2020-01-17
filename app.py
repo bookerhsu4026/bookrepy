@@ -243,6 +243,7 @@ def getmomo_top30_push(category,userid):
     message = None
     if len(_imgs) > 0:   
         _carouse_columns = []
+        path = html.xpath('//article[@class="pathArea"]//li/a')[0]
         for idx, img in enumerate(_imgs[:10], start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
@@ -253,7 +254,6 @@ def getmomo_top30_push(category,userid):
 
             _colu = CarouselColumn(
                 thumbnail_image_url=('https:'+img.attrib['org']) if 'http' not in img.attrib['org'] else img.attrib['org'],
-    #                title='',
                 text=_alt,
                 actions=[
                     URITemplateAction(
@@ -270,7 +270,7 @@ def getmomo_top30_push(category,userid):
         print(_carouse_columns)
        
         message = TemplateSendMessage(
-            alt_text='Momo TOP30',
+            alt_text=path.text+' TOP30',
             template=CarouselTemplate(
                 columns=_carouse_columns
             )
@@ -314,7 +314,7 @@ def handle_text_message(event):
 
     # 買東西
     if text == '幫助' or text.lower() == 'help':
-        response_message = '1.help\n2.找東西\n3.top30\n4.[台北..]天氣\n5.news\n'
+        response_message = '\n1.help\n2.找東西\n3.top30\n4.[台北..]天氣\n5.news\n'
         message = TextSendMessage(text='貓喵@:{}'.format(response_message))
     elif text == '新聞' or text.lower() == 'news':
         executor.submit(get_news_push,uid)
