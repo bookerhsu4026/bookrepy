@@ -309,21 +309,16 @@ def handle_text_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     nameid = profile.display_name
     uid = profile.user_id
-    global is_buy
+    #global is_buy
     text = event.message.text
 
     print('uid: '+uid)
     print('name:'+nameid)
-    print('is_buy:'+str(is_buy))
+    #print('is_buy:'+str(is_buy))
     print(text)
 
     # 買東西
-    if text == '我要買東西':
-        is_buy = True
-        message = TextSendMessage(text='貓喵買啥:')
-
-    elif text == '新聞' or text.lower() == 'news':
-        is_buy = False
+    if text == '新聞' or text.lower() == 'news':
         executor.submit(get_news_push,uid)
 
         message = StickerSendMessage(
@@ -333,7 +328,6 @@ def handle_text_message(event):
 
     # 傳送貼圖
     elif text == '貼圖' or text.lower() == 'pic':
-        is_buy = False
         package_id = random.randint(1, 2)
         sticker_id = 1
         if package_id == '1':
@@ -387,14 +381,6 @@ def handle_text_message(event):
                 package_id=2,
                 sticker_id=25
             )     
-    elif is_buy:
-        print('keyword={}'.format(text))
-        executor.submit(getmomo_search_push,text,uid)
-
-        message = StickerSendMessage(
-                package_id=2,
-                sticker_id=22
-            ) 
     elif text.isnumeric():
         print('stock_id={}'.format(text))
 
