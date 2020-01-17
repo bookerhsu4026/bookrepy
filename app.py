@@ -190,20 +190,17 @@ def getmomo_search_push(keyword,userid):
     
             _columns.append(CarouselColumn(
                     thumbnail_image_url=('https:'+img.attrib['src']) if 'http' not in img.attrib['src'] else img.attrib['src'],
-        #                title='',
                     text=_title,
                     actions=[
                         URITemplateAction(
                             label='去逛逛',
-                            uri=('https://m.momoshop.com.tw'+img.getparent().attrib['href']) if 'http' not in img.getparent().attrib['href'] else img.getparent().attrib['href']
+                            uri=('https://m.momoshop.com.tw'+img.getparent().getparent().attrib['href']) if 'http' not in img.getparent().getparent().attrib['href'] else img.getparent().getparent().attrib['href']
                         )
                     ]
                 )
             )
     
         #end for
-        
-        print(_columns)
     
         message = TemplateSendMessage(
             alt_text='Carousel template',
@@ -320,8 +317,8 @@ def handle_text_message(event):
         executor.submit(get_news_push,uid)
 
         message = StickerSendMessage(
-                package_id=2,
-                sticker_id=31
+                package_id=11539,
+                sticker_id=52114133
             )
 
     # 傳送貼圖
@@ -365,8 +362,8 @@ def handle_text_message(event):
         executor.submit(getmomo_top30_push,category_set[random.randint(0, len(category_set)-1)],uid)
 
         message = StickerSendMessage(
-                package_id=1,
-                sticker_id=119
+                package_id=11537,
+                sticker_id=52002748
             )
 
     elif u'天氣' in text:
@@ -376,8 +373,8 @@ def handle_text_message(event):
         executor.submit(get_current_weather,re.sub(r"(縣|市)", "", re.sub(r"台", "臺", city.group(1))),uid)
 
         message = StickerSendMessage(
-                package_id=2,
-                sticker_id=25
+                package_id=11539,
+                sticker_id=52114113
             )     
     elif text.isnumeric():
         print('stock_id={}'.format(text))
