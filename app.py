@@ -347,7 +347,7 @@ def handle_text_message(event):
             sticker_id=sticker_id
         )
 
-    elif text[0] == u'買' or text.lower() == u'找':
+    elif text[0] == u'買' or text[0] == u'找':
         text = text[1:]
         print('keyword={}'.format(text))
         executor.submit(getmomo_search_push,text,uid)
