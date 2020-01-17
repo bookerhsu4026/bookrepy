@@ -271,6 +271,7 @@ def getmomo_top30_push(category,userid):
        
         message = TemplateSendMessage(
             alt_text=path.text+' TOP30',
+            imageAspectRatio='square',
             template=CarouselTemplate(
                 columns=_carouse_columns
             )
@@ -311,6 +312,13 @@ def handle_text_message(event):
     print('name:'+nameid)
     #print('is_buy:'+str(is_buy))
     print(text)
+
+    if text.isnumeric() and len(text) == 1:
+         message = StickerSendMessage(
+                package_id=11539,
+                sticker_id=51626498
+            )
+         #text = if text
 
     # 買東西
     if text == '幫助' or text.lower() == 'help':
