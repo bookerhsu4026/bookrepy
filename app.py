@@ -244,7 +244,7 @@ def getmomo_top30_push(category,userid):
     if len(_imgs) > 0:   
         _carouse_columns = []
         path = html.xpath('//article[@class="pathArea"]//li/a')[0]
-        for idx, img in enumerate(_imgs[:20], start=0):
+        for idx, img in enumerate(_imgs[:-1], start=0):
             _alt = img.attrib['alt']
             match = re.search(r'【.+】(.+)', _alt)
             if match is not None:
