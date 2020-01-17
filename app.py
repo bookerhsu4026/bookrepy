@@ -272,6 +272,7 @@ def getmomo_top30_push(category,userid):
         message = TemplateSendMessage(
             alt_text=path.text+' TOP30',
             imageAspectRatio='square',
+            #imageSize='contain',
             template=CarouselTemplate(
                 columns=_carouse_columns
             )
