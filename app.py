@@ -306,23 +306,20 @@ def handle_text_message(event):
     profile = line_bot_api.get_profile(event.source.user_id)
     nameid = profile.display_name
     uid = profile.user_id
-    #global is_buy
     text = event.message.text
 
     print('uid: '+uid)
     print('name:'+nameid)
-    #print('is_buy:'+str(is_buy))
     print(text)
 
-    if text.isnumeric() and len(text) == 1:
-         message = StickerSendMessage(
-                package_id=11539,
-                sticker_id=51626498
-            )
-         #text = if text
+#    if text.isnumeric() and len(text) == 1:
+#         message = StickerSendMessage(
+#                package_id=11539,
+#                sticker_id=51626498
+#            )
 
     # 買東西
-    if text == '幫助' or text.lower() == 'help':
+    if text == '試試' or text == '幫助' or text.lower() == 'help' or text.lower() == 'try':
         response_message = '\n1.help\n2.找東西\n3.top30\n4.[台北..]天氣\n5.news\n'
         message = TextSendMessage(text='貓喵@:{}'.format(response_message))
     elif text == '新聞' or text.lower() == 'news':
@@ -370,7 +367,7 @@ def handle_text_message(event):
             )
           
     elif text.lower() == 'top30':
-        print('keyword={}'.format(text))
+        print('keyword={}'.format(text.lower()))
         executor.submit(getmomo_top30_push,category_set[random.randint(0, len(category_set)-1)],uid)
 
         message = StickerSendMessage(
@@ -397,7 +394,7 @@ def handle_text_message(event):
             )
     else:
         response_message = text #chatbot.get_response(message)
-        message = TextSendMessage(text='貓喵@#$:{}'.format(response_message))
+        message = TextSendMessage(text='貓喵@:{}'.format(response_message))
 
     time.sleep(1)
     line_bot_api.reply_message(event.reply_token,message)
