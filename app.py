@@ -11,6 +11,7 @@ from lxml import etree
 from bs4 import BeautifulSoup
 from flask import Flask, request, abort
 from concurrent.futures import ThreadPoolExecutor
+import pysnooper
 
 from linebot import (
     LineBotApi, WebhookHandler
