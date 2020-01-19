@@ -294,7 +294,7 @@ def get_stock_info(stock_id,userid):
         print('Invalid url:', resp.url)
         return None
 
-    soup = BeautifulSoup(resp.text, 'html5lib')
+    soup = BeautifulSoup(resp.text, 'html.parser')
     stock = dict()
 
     sections = soup.find_all('g-card-section')
