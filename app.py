@@ -284,6 +284,7 @@ def getmomo_top30_push(category,userid):
     #end if
     print('getmomo_top30_push: end')
 
+@pysnooper.snoop()
 def get_stock_info(stock_id,userid):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                              'AppleWebKit/537.36 (KHTML, like Gecko) '
