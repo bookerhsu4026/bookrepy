@@ -288,7 +288,8 @@ def getmomo_top30_push(category,userid):
 def get_stock_info(stock_id,userid):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                              'AppleWebKit/537.36 (KHTML, like Gecko) '
-                             'Chrome/66.0.3359.181 Safari/537.36'}
+                             'Chrome/66.0.3359.181 Safari/537.36',
+                             "Accept-Language":"zh-TW,zh;q=0.8"}
     resp = requests.get('https://www.google.com/search?q=TPE:{}'.format(stock_id), headers=headers)
     if resp.status_code != 200:
         print('Invalid url:', resp.url)
