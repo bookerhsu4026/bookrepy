@@ -1,1 +1,1 @@
-web: gunicorn app_core:app ¡Vpreload
+web: gunicorn app_core:app -preload
